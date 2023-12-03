@@ -27,9 +27,11 @@
 
 #include <sys/ioctl.h>
 
+#ifndef __APPLE__
 #include <linux/vt.h>
 #include <linux/kd.h>
 #include <linux/fb.h>
+#endif
 
 #include "linkapp.h"
 #include "fonthelper.h"
@@ -170,6 +172,7 @@ int main(int argc, char * argv[]) {
 			autoStart = true;
 		}
 	}
+#ifndef __APPLE__
 	int fd = open("/dev/tty0", O_RDONLY);
 	if (fd > 0) {
 		ioctl(fd, VT_UNLOCKSWITCH, 1);
@@ -177,6 +180,7 @@ int main(int argc, char * argv[]) {
 		ioctl(fd, KDSKBMODE, K_XLATE);
 		close(fd);
 	}
+#endif // __APPLE__
 
 	usleep(1000);
 
@@ -400,7 +404,7 @@ void GMenu2X::main(bool autoStart) {
 	if(confStr["lastCommand"] != "" && confStr["lastDirectory"] != "")  {
 		INFO("Starting autostart()");
 		INFO("conf %s %s",confStr["lastDirectory"].c_str(),confStr["lastCommand"].c_str());
-		INFO("autostart %s %s",confStr["lastDirectory"],confStr["lastCommand"]);
+		INFO("autostart %s %s",confStr["lastDirectory"].c_str(),confStr["lastCommand"].c_str());
 		setCPU(confInt["lastCPU"]);
 		setKbdLayout(confInt["lastKeyboardLayout"]);
 		setTefix(confInt["lastTefix"]);

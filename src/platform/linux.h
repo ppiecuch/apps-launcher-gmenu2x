@@ -1,12 +1,14 @@
 #ifndef HW_PC_H
 #define HW_PC_H
 
+#ifndef __APPLE__
 #include <linux/soundcard.h>
 
 volatile uint16_t *memregs;
 uint8_t memdev = 0;
 int SOUND_MIXER_READ = SOUND_MIXER_READ_PCM;
 int SOUND_MIXER_WRITE = SOUND_MIXER_WRITE_PCM;
+#endif // __APPLE__
 
 int32_t setTVoff() {
 	return 0;
