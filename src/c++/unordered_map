@@ -1,0 +1,11 @@
+#pragma once
+
+#ifdef __APPLE__
+#include <unordered_map>
+namespace std { namespace tr1 {
+	using std::unordered_map;
+	using std::hash;
+}}
+#else
+#include <tr1/unordered_map>
+#endif

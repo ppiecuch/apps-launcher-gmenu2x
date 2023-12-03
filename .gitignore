@@ -13,3 +13,4 @@ opkinfo
 *~
 *.d
 *.json
+.DS_Store
