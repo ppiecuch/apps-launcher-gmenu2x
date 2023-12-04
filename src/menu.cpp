@@ -900,6 +900,7 @@ void Menu::exec() {
 		else if (gmenu2x->input[CANCEL])	continue;
 		else if (gmenu2x->input[SETTINGS] && !(gmenu2x->actionPerformed))	gmenu2x->settings();
 		else if (gmenu2x->input[MENU])		gmenu2x->contextMenu();
+		else if (gmenu2x->input[QUIT])	break;
 
 		// LINK NAVIGATION
 		else if (gmenu2x->input[LEFT]  && linkCols == 1 && linkRows > 1) pageUp();

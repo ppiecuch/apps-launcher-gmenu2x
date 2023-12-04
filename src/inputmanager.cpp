@@ -95,6 +95,13 @@ void InputManager::init(const string &conffile) {
 		actions[x].maplist.push_back(map);
 	}
 
+#ifdef __APPLE__
+	InputMap map;
+	map.type = MAPPING_TYPE_KEYPRESS;
+	map.value = SDLK_q;
+	actions[QUIT].maplist.push_back(map);
+#endif
+
 	while (getline(inf, line, '\n')) {
 		linenum++;
 		pos = line.find("=");
@@ -121,6 +128,7 @@ void InputManager::init(const string &conffile) {
 		else if (name == "backlight")    action = BACKLIGHT;
 		else if (name == "power")        action = POWER;
 		else if (name == "menu")         action = MENU;
+		else if (name == "quit")         action = QUIT;
 		else if (name == "speaker") {}
 		else {
 			ERROR("%s:%d Unknown action '%s'.", conffile.c_str(), linenum, name.c_str());
