@@ -1,0 +1,19 @@
+[Unit]
+Description=AppLuncher Service
+ConditionPathExists=/var/app/gmenu2x
+After=network.target
+[Service]
+Type=simple
+User=root
+Group=root
+LimitNOFILE=1024
+Restart=on-failure
+RestartSec=10
+WorkingDirectory=/var/app
+ExecStart=/var/app/gmenu2x
+PermissionsStartOnly=true
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=gmenu2x
+[Install]
+WantedBy=multi-user.target
