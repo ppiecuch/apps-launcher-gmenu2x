@@ -277,6 +277,11 @@ void GMenu2X::main(bool autoStart) {
 
 	setInputSpeed();
 
+#ifdef RASPBERRY_PI
+	const SDL_VideoInfo* vInfo = SDL_GetVideoInfo();
+	INFO("Setting videomode %dx%d%d",vInfo->current_w, vInfo->current_h, vInfo->vfmt->BitsPerPixel);
+	SDL_Surface *screen =  SDL_SetVideoMode(vInfo->current_w, vInfo->current_h, vInfo->vfmt->BitsPerPixel, SDL_SWSURFACE);
+#else
 	SDL_Surface *screen = SDL_SetVideoMode(this->w, this->h, this->bpp, SDL_HWSURFACE |
 		#ifdef SDL_TRIPLEBUF
 			SDL_TRIPLEBUF
@@ -284,6 +289,7 @@ void GMenu2X::main(bool autoStart) {
 			SDL_DOUBLEBUF
 		#endif
 	);
+#endif
 	s = new Surface();
 
 	s->enableVirtualDoubleBuffer(screen);
