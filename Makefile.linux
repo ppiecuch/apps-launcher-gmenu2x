@@ -69,6 +69,7 @@ dist: dir libopk shared
 	cp -RH assets/translations $(DISTDIR)
 	cp -RH assets/skins $(DISTDIR)
 	cp -RH assets/$(PLATFORM)/input.conf $(DISTDIR)
+	cp -RH gmenu2x.service $(DISTDIR)
 
 zip: dist
 	cd $(DISTDIR)/ && zip -r ../gmenunx.$(PLATFORM).zip skins translations ChangeLog COPYING gmenu2x input.conf README.txt
