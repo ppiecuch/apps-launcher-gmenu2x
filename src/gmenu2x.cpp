@@ -286,7 +286,7 @@ void GMenu2X::main(bool autoStart) {
 
 #ifdef RASPBERRY_PI
 	const SDL_VideoInfo* vInfo = SDL_GetVideoInfo();
-	INFO("Setting videomode %dx%d%d",vInfo->current_w, vInfo->current_h, vInfo->vfmt->BitsPerPixel);
+	INFO("Setting videomode %dx%dx%d",vInfo->current_w, vInfo->current_h, vInfo->vfmt->BitsPerPixel);
 	SDL_Surface *screen =  SDL_SetVideoMode(vInfo->current_w, vInfo->current_h, vInfo->vfmt->BitsPerPixel, SDL_SWSURFACE);
 #else
 	SDL_Surface *screen = SDL_SetVideoMode(this->w, this->h, this->bpp, SDL_HWSURFACE |
