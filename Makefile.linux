@@ -9,14 +9,14 @@ STRIP   := strip
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Darwin)
-SDL_CFLAGS  := $(shell /opt/local/bin/sdl-config --cflags)
-SDL_LIBS    := $(shell /opt/local/bin/sdl-config --libs)
+	SDL_CFLAGS  := $(shell /opt/local/bin/sdl-config --cflags)
+	SDL_LIBS    := $(shell /opt/local/bin/sdl-config --libs)
 else
-SYSROOT     := $(shell $(CC) --print-sysroot)
-SDL_CFLAGS  := $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
-SDL_LIBS    := $(shell $(SYSROOT)/usr/bin/sdl-config --libs)
-BSTATIC     := -Wl,-Bstatic
-BDYNAMIC    := -Wl,-Bdynamic
+	SYSROOT     := $(shell $(CC) --print-sysroot)
+	SDL_CFLAGS  := $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
+	SDL_LIBS    := $(shell $(SYSROOT)/usr/bin/sdl-config --libs)
+	BSTATIC     := -Wl,-Bstatic
+	BDYNAMIC    := -Wl,-Bdynamic
 endif
 
 CFLAGS = -DPLATFORM=\"$(PLATFORM)\" -D__BUILDTIME__="$(BUILDTIME)" -DLOG_LEVEL=4 $(USER)
