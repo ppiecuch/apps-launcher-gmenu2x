@@ -241,6 +241,13 @@ void GMenu2X::quit_nosave() {
 }
 
 void GMenu2X::main(bool autoStart) {
+#ifdef RASPBERRY_PI
+# ifndef FRAMEBUFFER
+#  define FRAMEBUFFER "/dev/fb0"
+# endif
+	putenv((char*)"FRAMEBUFFER=" FRAMEBUFFER);
+	putenv((char*)"SDL_FBDEV=" FRAMEBUFFER);
+#endif
 	hwInit();
 
 	chdir(exe_path().c_str());

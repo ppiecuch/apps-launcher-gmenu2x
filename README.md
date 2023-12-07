@@ -169,3 +169,4 @@ or
   * https://github.com/lualiliu/GMenuNext-on-raspberry-pi/blob/master/src/gmenu2x.cpp
   * https://github.com/zfteam/gmenu2x-sdl2
   * https://github.com/OnionUI/app-DinguxCommander
+  * https://github.com/raspberrypi/firmware/issues/354
