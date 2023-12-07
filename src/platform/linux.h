@@ -10,6 +10,11 @@ int SOUND_MIXER_READ = SOUND_MIXER_READ_PCM;
 int SOUND_MIXER_WRITE = SOUND_MIXER_WRITE_PCM;
 #endif // __APPLE__
 
+// https://github.com/paradigmic/cpushow/blob/master/pcd8544_rpi.c
+#ifdef RASPBERRY_PI
+#include <sys/sysinfo.h>
+#endif // RASPBERRY_PI
+
 int32_t setTVoff() {
 	return 0;
 }

@@ -144,13 +144,13 @@ public:
 
 	RGBAColor skinConfColors[NUM_COLORS];
 	SurfaceCollection sc;
-	Surface *s, *bg, *iconInet = NULL;
+	Surface *s = NULL, *bg, *iconInet = NULL;
 	Translator tr;
 	FontHelper *font = NULL, *titlefont = NULL;
-	PowerManager *powerManager;
+	PowerManager *powerManager = NULL;
 	InputManager input;
 	Touchscreen ts;
-	Menu *menu;
+	Menu *menu = NULL;
 	bool f200 = true; //gp2x type // touchscreen
 	string currBackdrop;
 

@@ -204,9 +204,10 @@ GMenu2X::~GMenu2X() {
 }
 
 void GMenu2X::quit() {
-	s->flip(); s->flip(); s->flip(); // flush buffers
-
-	powerManager->clearTimer();
+	if (s) {
+		s->flip(); s->flip(); s->flip(); // flush buffers
+	}
+	if (powerManager) powerManager->clearTimer();
 	get_date_time(); // update sw clock
 	confStr["datetime"] = get_date_time();
 //#if defined(HW_LIDVOL)
@@ -215,10 +216,10 @@ void GMenu2X::quit() {
 //#endif	
 	writeConfig();
 
-	s->free();
+	if (s) s->free();
 
-	font->free();
-	titlefont->free();
+	if (font) font->free();
+	if (titlefont) titlefont->free();
 
 	fflush(NULL);
 	SDL_Quit();
@@ -226,14 +227,16 @@ void GMenu2X::quit() {
 }
 
 void GMenu2X::quit_nosave() {
-	s->flip(); s->flip(); s->flip(); // flush buffers
+	if (s) {
+		s->flip(); s->flip(); s->flip(); // flush buffers
+	}
 
-	powerManager->clearTimer();
+	if (powerManager) powerManager->clearTimer();
 
-	s->free();
+	if (s) s->free();
 
-	font->free();
-	titlefont->free();
+	if (font) font->free();
+	if (titlefont) titlefont->free();
 
 	fflush(NULL);
 	SDL_Quit();
