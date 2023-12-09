@@ -54,7 +54,11 @@ debug: $(OBJS)
 	@echo "Linking gmenu2x-debug..."
 	$(CXX) -o $(TARGET)-debug $(OBJS) $(LDFLAGS)
 
-shared: debug
+service: $(OBJS)
+	@echo "Linking gmenu2x-service..."
+	$(CXX) -o $(TARGET)-debug $(OBJS) $(LDFLAGS)
+
+shared: debug service
 	$(STRIP) $(TARGET)-debug -o $(TARGET)
 
 clean:
