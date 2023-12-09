@@ -178,7 +178,7 @@ int main(int argc, char * argv[]) {
 			autoStart = true;
 		}
 	}
-#ifndef __APPLE__
+
 	int fd = open("/dev/tty0", O_RDONLY);
 	if (fd > 0) {
 		ioctl(fd, VT_UNLOCKSWITCH, 1);
@@ -186,7 +186,6 @@ int main(int argc, char * argv[]) {
 		ioctl(fd, KDSKBMODE, K_XLATE);
 		close(fd);
 	}
-#endif // __APPLE__
 
 	usleep(1000);
 
