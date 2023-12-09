@@ -73,11 +73,11 @@ bool getSysInfo(float &cpuload, uint64_t &totalram, uint64_t &procs) {
 uint32_t hwCheck(unsigned int interval = 0, void *param = NULL) {
 	numJoy = getDevStatus();
 	printf("%s:%d: %s\n"
-		"  - numJoy: %d\n"
+		"  - devStatus: %d\n"
 		"  - batteryLevel: %d\n"
 		"  - MMCStatus: %d\n"
 		"  - UDCStatus: %d\n"
-		, __FILE__, __LINE__, __func__, numJoy, getBatteryLevel(), getMMCStatus(), getUDCStatus());
+		, __FILE__, __LINE__, __func__, getDevStatus(), getBatteryLevel(), getMMCStatus(), getUDCStatus());
 	if (numJoyPrev != numJoy) {
 		numJoyPrev = numJoy;
 		InputManager::pushEvent(JOYSTICK_CONNECT);
