@@ -186,7 +186,6 @@ bool InputManager::update(bool wait) {
 	SDL_Event event;
 
 	SDL_JoystickUpdate();
-
 	if (wait) SDL_WaitEvent(&event);
 	else if (!SDL_PollEvent(&event)) return false;
 
@@ -196,6 +195,11 @@ bool InputManager::update(bool wait) {
 	}
 
 	dropEvents();
+
+	if (event.type == SDL_QUIT) {
+		actions[QUIT].active = true;
+		return true;
+	}
 
 	x = event.key.keysym.sym;
 	if (!x) x = event.key.keysym.scancode;

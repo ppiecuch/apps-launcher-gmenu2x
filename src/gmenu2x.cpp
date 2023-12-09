@@ -153,8 +153,14 @@ static const char *colorToString(enum color c) {
 
 GMenu2X *GMenu2X::instance = NULL;
 
+static bool _sig_handler = false;
+
 static void quit_all(int err) {
-	delete GMenu2X::instance;
+	if (!_sig_handler) {
+		_sig_handler = true;
+		if (GMenu2X::instance)
+			delete GMenu2X::instance;
+	}
 	exit(err);
 }
 
@@ -197,10 +203,11 @@ GMenu2X::~GMenu2X() {
 	writeConfig();
 	
 	quit();
-	delete menu;
-	delete s;
-	delete font;
-	delete titlefont;
+
+	if (menu) delete menu;
+	if (s) delete s;
+	if (font) delete font;
+	if (titlefont) delete titlefont;
 }
 
 void GMenu2X::quit() {
@@ -210,19 +217,21 @@ void GMenu2X::quit() {
 	if (powerManager) powerManager->clearTimer();
 	get_date_time(); // update sw clock
 	confStr["datetime"] = get_date_time();
+
 //#if defined(HW_LIDVOL)
 // 	setBacklight(getBacklight());
 // 	setVolume(getVolume());
 //#endif	
+
 	writeConfig();
 
 	if (s) s->free();
-
 	if (font) font->free();
 	if (titlefont) titlefont->free();
 
 	fflush(NULL);
-	SDL_Quit();
+	if (!_sig_handler) // segfault on quit
+		SDL_Quit();
 	hwDeinit();
 }
 
@@ -234,12 +243,12 @@ void GMenu2X::quit_nosave() {
 	if (powerManager) powerManager->clearTimer();
 
 	if (s) s->free();
-
 	if (font) font->free();
 	if (titlefont) titlefont->free();
 
 	fflush(NULL);
-	SDL_Quit();
+	if (!_sig_handler)
+		SDL_Quit();
 	hwDeinit();
 }
 
@@ -2198,6 +2207,7 @@ int GMenu2X::drawButton(Button *btn, int x, int y) {
 	if (y < 0) y = this->h + y;
 	btn->setPosition(x, y);
 	btn->paint();
+	return x;
 }
 
 int GMenu2X::drawButton(Surface *s, const string &btn, const string &text, int x, int y) {

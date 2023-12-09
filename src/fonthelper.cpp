@@ -15,8 +15,8 @@ FontHelper::~FontHelper() {
 }
 
 void FontHelper::free() {
-	TTF_CloseFont(font);
-	TTF_CloseFont(fontOutline);
+	if (font) TTF_CloseFont(font); font = 0;
+	if (fontOutline) TTF_CloseFont(fontOutline); fontOutline = 0;
 }
 
 void FontHelper::loadFont(const string &fontName, int fontSize) {
