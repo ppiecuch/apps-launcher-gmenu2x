@@ -214,12 +214,11 @@ string exec(const char* cmd) {
 }
 
 string real_path(const string &path) {
-	char real_path[PATH_MAX];
-	char *ptr;
-
-	ptr = realpath(path.c_str(), real_path);
+	char real_path[PATH_MAX] = { 0 };
+	char *ptr = realpath(path.c_str(), real_path);
 
 	if (ptr == NULL && errno == ENOENT) {
+		printf("@@@@ %s\n",path.c_str());
 		string outpath;
 		vector<string> vpath;
 		split(vpath, path, "/");
@@ -251,7 +250,7 @@ string real_path(const string &path) {
 		}
 		return outpath;
 	}
-	return (string)real_path;
+	return real_path;
 }
 
 string dir_name(const string &path) {

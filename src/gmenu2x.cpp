@@ -344,7 +344,7 @@ void GMenu2X::main(bool autoStart) {
 
 	srand(time(0));  // Seed the rand with current time to get different number sequences
 	int randomInt = rand() % 10; // Generate a random val={0..x} to print "Hint" msg occasionally
-	//Hint messages
+	// Hint messages
 	if (confInt["showHints"] == 1) {
 		if (confStr["lastCommand"] == "" || confStr["lastDirectory"] == "") {
 			switch (randomInt) {
