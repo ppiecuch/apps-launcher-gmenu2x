@@ -168,7 +168,8 @@ static void quit_all(int err) {
 static void restart() {
 	WARNING("Re-launching gmenu2x");
 	if (_run_service) {
-		quit_all();
+ 		if (GMenu2X::instance)
+    		delete GMenu2X::instance;
 		exit(0);
 	} else {
 		chdir(exe_path().c_str());

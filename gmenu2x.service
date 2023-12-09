@@ -1,0 +1,19 @@
+[Unit]
+Description=Game Center
+ConditionPathExists=/var/app/gmenu2x
+After=network.target
+[Service]
+Type=simple
+User=root
+Group=root
+LimitNOFILE=1024
+Restart=on-failure
+RestartSec=2
+WorkingDirectory=/var/app/gmenu2x
+ExecStart=/var/app/gmenu2x/gmenu2x-service
+PermissionsStartOnly=true
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=gmenu2x
+[Install]
+WantedBy=multi-user.target
