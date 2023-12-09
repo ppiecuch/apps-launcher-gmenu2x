@@ -183,12 +183,17 @@ int main(int argc, char * argv[]) {
 	signal(SIGSEGV, &quit_all);
 	signal(SIGTERM, &quit_all);
 
+	if(strstr(exe_name(), "-service")) {
+		INFO("Enable service mode...");
+		_run_service = true;
+	}
+
 	bool autoStart = false;
 	for (int i = 0; i < argc; i++){
 		if(strcmp(argv[i],"--autostart")==0) {
 			INFO("Launching Autostart");
 			autoStart = true;
-		} else if(strcmp(argv[i],"--service")==0) {
+		} else if(strcmp(argv[i],"--service")==0 && !_run_service) {
 			INFO("Enable service mode...");
 			_run_service = true;
 		}

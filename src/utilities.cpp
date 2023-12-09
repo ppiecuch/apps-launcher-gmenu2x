@@ -339,12 +339,25 @@ string exe_path() {
 	int ret = proc_pidpath (pid, real_path, PATH_MAX);
 	return dir_name(real_path);
 }
+
+string exe_name() {
+	char real_path[PATH_MAX] = { 0 };
+	pid_t pid = getpid();
+	int ret = proc_pidpath (pid, real_path, PATH_MAX);
+	return base_name(real_path);
+}
 #else
 string exe_path() {
 	char real_path[PATH_MAX] = { 0 };
 	memset(real_path, 0, PATH_MAX);
 	readlink("/proc/self/exe", real_path, PATH_MAX);
 	return dir_name(real_path);
+}
+string exe_name() {
+	char real_path[PATH_MAX] = { 0 };
+	memset(real_path, 0, PATH_MAX);
+	readlink("/proc/self/exe", real_path, PATH_MAX);
+	return base_name(real_path);
 }
 #endif
 

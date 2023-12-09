@@ -80,6 +80,7 @@ string file_ext(const string &path, bool tolower = false);
 string lowercase(string s);
 string unique_filename(string path, string ext);
 string exe_path();
+string exe_name();
 string disk_free(const char *path);
 const string get_date_time();
 void sync_date_time(time_t t);
