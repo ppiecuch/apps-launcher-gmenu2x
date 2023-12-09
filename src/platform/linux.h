@@ -53,12 +53,12 @@ uint8_t getVolumeMode(uint8_t vol) {
 #ifdef RASPBERRY_PI
 #include <sys/sysinfo.h>
 bool getSysInfo(float &cpuload, uint64_t &totalram, uint64_t &procs) {
-	sys_info info;
+	struct sysinfo sys_info;
 	if(sysinfo(&sys_info) != 0) {
 		return false;
 	}
 
-	cpuload = ((float)sys_info.loads[0])/(1<<SI_LOAD_SHIFT)); // cpu info
+	cpuload = ((float)sys_info.loads[0])/(1<<SI_LOAD_SHIFT); // cpu info
 	totalram = sys_info.freeram / 1024 / 1024; // freeram
 	procs = sys_info.procs; // processes
 
