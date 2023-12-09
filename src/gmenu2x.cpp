@@ -184,7 +184,7 @@ int main(int argc, char * argv[]) {
 	signal(SIGSEGV, &quit_all);
 	signal(SIGTERM, &quit_all);
 
-	if(strstr(exe_name(), "-service")) {
+	if(strstr(exe_name().c_str(), "-service")) {
 		INFO("Enable service mode...");
 		_run_service = true;
 	}
