@@ -154,6 +154,7 @@ static const char *colorToString(enum color c) {
 GMenu2X *GMenu2X::instance = NULL;
 
 static bool _sig_handler = false;
+static bool _run_service = false;
 
 static void quit_all(int err) {
 	if (!_sig_handler) {
@@ -162,6 +163,17 @@ static void quit_all(int err) {
 			delete GMenu2X::instance;
 	}
 	exit(err);
+}
+
+static void restart() {
+	WARNING("Re-launching gmenu2x");
+	if (_run_service) {
+		quit_all();
+		exit(0);
+	} else {
+		chdir(exe_path().c_str());
+		execlp("./gmenu2x", "./gmenu2x", NULL);
+	}
 }
 
 int main(int argc, char * argv[]) {
@@ -173,12 +185,15 @@ int main(int argc, char * argv[]) {
 
 	bool autoStart = false;
 	for (int i = 0; i < argc; i++){
-       		if(strcmp(argv[i],"--autostart")==0) {
+		if(strcmp(argv[i],"--autostart")==0) {
 			INFO("Launching Autostart");
 			autoStart = true;
+		} else if(strcmp(argv[i],"--service")==0) {
+			INFO("Enable service mode...");
+			_run_service = true;
 		}
 	}
-#ifndef __APPLE__
+
 	int fd = open("/dev/tty0", O_RDONLY);
 	if (fd > 0) {
 		ioctl(fd, VT_UNLOCKSWITCH, 1);
@@ -186,7 +201,6 @@ int main(int argc, char * argv[]) {
 		ioctl(fd, KDSKBMODE, K_XLATE);
 		close(fd);
 	}
-#endif // __APPLE__
 
 	usleep(1000);
 
@@ -407,7 +421,7 @@ void GMenu2X::main(bool autoStart) {
 	}
 
 	input.update(false);
-	if (input[MANUAL]){ //Reset GMenu2X settings
+	if (input[MANUAL]){ // Reset GMenu2X settings
 		string tmppath = exe_path() + "/gmenu2x.conf";
 		unlink(tmppath.c_str());
 		reinit();
@@ -1666,17 +1680,13 @@ void GMenu2X::reinit(bool showDialog) {
 	}
 
 	quit_nosave();
-	WARNING("Re-launching gmenu2x");
-	chdir(exe_path().c_str());
-	execlp("./gmenu2x", "./gmenu2x", NULL);
+	restart();
 }
 
 void GMenu2X::reinit_save() {
 
 	quit();
-	WARNING("Re-launching gmenu2x");
-	chdir(exe_path().c_str());
-	execlp("./gmenu2x", "./gmenu2x", NULL);
+	restart();
 }
 
 void GMenu2X::poweroffDialog() {
