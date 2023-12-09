@@ -60,7 +60,7 @@ service: $(OBJS)
 
 shared: debug service
 	$(STRIP) $(TARGET)-debug -o $(TARGET)
-	$(STRIP) $(TARGET)-service -o $(TARGET)
+	$(STRIP) $(TARGET)-debug -o $(TARGET)-service
 
 clean:
 	make -C src/libopk clean
