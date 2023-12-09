@@ -10,11 +10,6 @@ int SOUND_MIXER_READ = SOUND_MIXER_READ_PCM;
 int SOUND_MIXER_WRITE = SOUND_MIXER_WRITE_PCM;
 #endif // __APPLE__
 
-// https://github.com/paradigmic/cpushow/blob/master/pcd8544_rpi.c
-#ifdef RASPBERRY_PI
-#include <sys/sysinfo.h>
-#endif // RASPBERRY_PI
-
 int32_t setTVoff() {
 	return 0;
 }
@@ -22,23 +17,11 @@ int32_t setTVoff() {
 uint16_t getDevStatus() {
 	FILE *f;
 	char buf[10000];
-	if (f = fopen("/proc/bus/input/devices", "r")) {
-	// if (f = fopen("/proc/bus/input/handlers", "r")) {
+	if ((f = fopen("/proc/bus/input/devices", "r"))) { // if ((f = fopen("/proc/bus/input/handlers", "r"))) {
 		size_t sz = fread(buf, sizeof(char), 10000, f);
 		fclose(f);
 		return sz;
 	}
-	return 0;
-}
-
-uint32_t hwCheck(unsigned int interval = 0, void *param = NULL) {
-	printf("%s:%d: %s\n", __FILE__, __LINE__, __func__);
-	numJoy = getDevStatus();
-	if (numJoyPrev != numJoy) {
-		numJoyPrev = numJoy;
-		InputManager::pushEvent(JOYSTICK_CONNECT);
-	}
-
 	return 0;
 }
 
@@ -64,6 +47,43 @@ uint8_t getBatteryStatus(int32_t val, int32_t min, int32_t max) {
 
 uint8_t getVolumeMode(uint8_t vol) {
 	return VOLUME_MODE_NORMAL;
+}
+
+// https://github.com/paradigmic/cpushow/blob/master/pcd8544_rpi.c
+#ifdef RASPBERRY_PI
+#include <sys/sysinfo.h>
+bool getSysInfo(float &cpuload, uint64_t &totalram, uint64_t &procs) {
+	sys_info info;
+	if(sysinfo(&sys_info) != 0) {
+		return false;
+	}
+
+	cpuload = ((float)sys_info.loads[0])/(1<<SI_LOAD_SHIFT)); // cpu info
+	totalram = sys_info.freeram / 1024 / 1024; // freeram
+	procs = sys_info.procs; // processes
+
+	return true;
+}
+#else
+bool getSysInfo(float &cpuload, uint64_t &totalram, uint64_t &procs) {
+	return false;
+}
+#endif // RASPBERRY_PI
+
+uint32_t hwCheck(unsigned int interval = 0, void *param = NULL) {
+	numJoy = getDevStatus();
+	printf("%s:%d: %s\n"
+		"  - numJoy: %d\n"
+		"  - batteryLevel: %d\n"
+		"  - MMCStatus: %d\n"
+		"  - UDCStatus: %d\n"
+		, __FILE__, __LINE__, __func__, numJoy, getBatteryLevel(), getMMCStatus(), getUDCStatus());
+	if (numJoyPrev != numJoy) {
+		numJoyPrev = numJoy;
+		InputManager::pushEvent(JOYSTICK_CONNECT);
+	}
+
+	return 0;
 }
 
 class GMenuNX : public GMenu2X {

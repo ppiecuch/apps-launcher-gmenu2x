@@ -1232,7 +1232,7 @@ void GMenu2X::setSkin(string skin, bool clearSC) {
 	}
 	if (skinConfColors[COLOR_PREVIEW_BG].r == 253 && skinConfColors[COLOR_PREVIEW_BG].g == 1 && skinConfColors[COLOR_PREVIEW_BG].b == 252 && skinConfColors[COLOR_PREVIEW_BG].a == 0) {
 		skinConfColors[COLOR_PREVIEW_BG] = skinConfColors[COLOR_TOP_BAR_BG];
-		skinConfColors[COLOR_PREVIEW_BG].a == 170;
+		skinConfColors[COLOR_PREVIEW_BG].a = 170;
 	}
 
 	// prevents breaking current skin until they are updated
@@ -2068,7 +2068,7 @@ string GMenu2X::ipkName(string cmd) {
 	fgets(package, sizeof(package) - 1, fp);
 	pclose(fp);
 
-	if (package == NULL)
+	if (package[0] == 0)
 		return "";
 
 	return trim((string)package);
