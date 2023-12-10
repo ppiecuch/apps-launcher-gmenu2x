@@ -42,14 +42,14 @@ void PowerManager::resetPowerTimer() {
 
 uint32_t PowerManager::doSuspend(uint32_t interval, void *param) {
 	if (interval > 0) {
+		INFO("Entering suspend mode");
 #if defined(HW_LIDVOL)
 		PowerManager::instance->gmenu2x->confInt["backlight"] = PowerManager::instance->gmenu2x->getBacklight();
 		PowerManager::instance->gmenu2x->confInt["globalVolume"] = PowerManager::instance->gmenu2x->getVolume();
-//		INFO("%i", PowerManager::instance->gmenu2x->confInt["backlight"]);
-//		INFO("%i", PowerManager::instance->gmenu2x->confInt["globalVolume"]);
+		// INFO("backlight: %i, globalVolume: %i", PowerManager::instance->gmenu2x->confInt["backlight"], PowerManager::instance->gmenu2x->confInt["globalVolume"]);
 #endif
 		PowerManager::instance->gmenu2x->setBacklight(0);
-//		PowerManager::instance->gmenu2x->setVolume(0);
+		// PowerManager::instance->gmenu2x->setVolume(0);
 		PowerManager::instance->resetPowerTimer();
 		PowerManager::instance->gmenu2x->cls();
 		PowerManager::instance->gmenu2x->setCPU(PowerManager::instance->gmenu2x->confInt["cpuMin"]);
@@ -57,8 +57,7 @@ uint32_t PowerManager::doSuspend(uint32_t interval, void *param) {
 		return interval;
 	}
 
-//	INFO("%i", PowerManager::instance->gmenu2x->confInt["backlight"]);
-//	INFO("%i", PowerManager::instance->gmenu2x->confInt["globalVolume"]);
+	// INFO("backlight: %i, globalVolume: %i", PowerManager::instance->gmenu2x->confInt["backlight"], PowerManager::instance->gmenu2x->confInt["globalVolume"]);
 	PowerManager::instance->gmenu2x->setBacklight(max(10, PowerManager::instance->gmenu2x->confInt["backlight"]));
 	PowerManager::instance->gmenu2x->setVolume(PowerManager::instance->gmenu2x->confInt["globalVolume"]);
 	PowerManager::instance->gmenu2x->setCPU(PowerManager::instance->gmenu2x->confInt["cpuMenu"]);
@@ -69,6 +68,7 @@ uint32_t PowerManager::doSuspend(uint32_t interval, void *param) {
 };
 
 uint32_t PowerManager::doPowerOff(uint32_t interval, void *param) {
+	INFO("Entering poweroff mode");
 #if !defined(TARGET_LINUX)
 	system("sync; poweroff");
 #endif

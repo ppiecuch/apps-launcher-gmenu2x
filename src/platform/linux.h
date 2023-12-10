@@ -72,7 +72,7 @@ bool getSysInfo(float &cpuload, uint64_t &totalram, uint64_t &procs) {
 
 uint32_t hwCheck(unsigned int interval = 0, void *param = NULL) {
 	numJoy = getDevStatus();
-	printf("%s:%d: %s\n"
+	INFO("%s:%d: %s\n"
 		"  - devStatus: %d\n"
 		"  - batteryLevel: %d\n"
 		"  - MMCStatus: %d\n"
