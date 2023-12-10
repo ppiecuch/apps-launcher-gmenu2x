@@ -960,5 +960,4 @@ void Menu::exec() {
 			sectionChangedTimer = SDL_AddTimer(2000, gmenu2x->input.wakeUp, (void*)false);
 		}
 	}
-	printf("** end\n");
 }
