@@ -29,6 +29,23 @@ using namespace std;
 
 extern uint8_t numJoy; // number of connected joysticks
 
+#define SDL_MAP_SIZE 32
+
+const u32 sdl_map_btn_usb[SDL_MAP_SIZE] =
+	{ DC_BTN_Y, DC_BTN_B, DC_BTN_A, DC_BTN_X, 0, 0, 0, 0, 0, DC_BTN_START };
+
+const u32 sdl_map_axis_usb[SDL_MAP_SIZE] =
+	{ DC_AXIS_X, DC_AXIS_Y, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+const u32 sdl_map_btn_xbox360[SDL_MAP_SIZE] =
+	{ DC_BTN_A, DC_BTN_B, DC_BTN_X, DC_BTN_Y, 0, 0, 0, DC_BTN_START, 0, 0 };
+
+const u32 sdl_map_axis_xbox360[SDL_MAP_SIZE] =
+	{ DC_AXIS_X, DC_AXIS_Y, DC_AXIS_LT, 0, 0, DC_AXIS_RT, DC_DPAD_LEFT, DC_DPAD_UP, 0, 0 };
+
+const u32* sdl_map_btn  = sdl_map_btn_usb;
+const u32* sdl_map_axis = sdl_map_axis_usb;
+
 enum InputManagerMappingTypes {
 	MAPPING_TYPE_BUTTON,
 	MAPPING_TYPE_AXIS,
@@ -60,7 +77,7 @@ void InputManager::initJoysticks(bool reinit) {
 	for (int x = 0; x < nj; x++) {
 		SDL_Joystick *joy = SDL_JoystickOpen(x);
 		if (joy) {
-			INFO("Initialized joystick %d: '%s'\n  - hats: %d\n  - buttons: %d", x, SDL_JoystickName(x), SDL_JoystickNumHats (x), SDL_JoystickNumButtons(x));
+			INFO("Initialized joystick %d: '%s'\n  - hats: %d\n  - buttons: %d", x, SDL_JoystickName(x), SDL_JoystickNumHats(joy), SDL_JoystickNumButtons(joy));
 			joysticks.push_back(joy);
 		}
 		else WARNING("Failed to initialize joystick: %i", x);
