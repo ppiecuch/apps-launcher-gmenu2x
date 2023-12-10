@@ -76,7 +76,7 @@ uint32_t hwCheck(unsigned int interval = 0, void *param = NULL) {
 		"  - devStatus: %d\n"
 		"  - batteryLevel: %d\n"
 		"  - MMCStatus: %d\n"
-		"  - UDCStatus: %d\n"
+		"  - UDCStatus: %d"
 		, __FILE__, __LINE__, __func__, getDevStatus(), getBatteryLevel(), getMMCStatus(), getUDCStatus());
 	if (numJoyPrev != numJoy) {
 		numJoyPrev = numJoy;
