@@ -218,7 +218,6 @@ string real_path(const string &path) {
 	char *ptr = realpath(path.c_str(), real_path);
 
 	if (ptr == NULL && errno == ENOENT) {
-		printf("@@@@ %s\n",path.c_str());
 		string outpath;
 		vector<string> vpath;
 		split(vpath, path, "/");
