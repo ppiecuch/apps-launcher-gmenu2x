@@ -173,7 +173,8 @@ static void restart() {
 		exit(0);
 	} else {
 		chdir(exe_path().c_str());
-		execlp("./gmenu2x", "./gmenu2x", NULL);
+		string exe = "./" + exe_name();
+		execlp(exe.c_str(), exe.c_str(), NULL);
 	}
 }
 
@@ -366,28 +367,28 @@ void GMenu2X::main(bool autoStart) {
 				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'SELECT' to disable TV-output"]);
 				mb.setAutoHide(1000);
 				mb.setBgAlpha(0);
-				mb.exec();		
+				mb.exec();
 				break;
 				}
 				case 3: {
 				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'START' to enter Suspend Mode"]);
 				mb.setAutoHide(1000);
 				mb.setBgAlpha(0);
-				mb.exec();		
+				mb.exec();
 				break;
 				}
 				case 4: {
 				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: You can AutoStart any game/app!? See settings"]);
 				mb.setAutoHide(1000);
 				mb.setBgAlpha(0);
-				mb.exec();		
+				mb.exec();
 				break;
 				}
 				case 5: {
 				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'Y' to restart GMenu2X"]);
 				mb.setAutoHide(1000);
 				mb.setBgAlpha(0);
-				mb.exec();		
+				mb.exec();
 				break;
 				}
 				default: {
