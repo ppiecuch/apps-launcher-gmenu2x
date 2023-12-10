@@ -7,8 +7,10 @@ Type=simple
 User=root
 Group=root
 LimitNOFILE=1024
-Restart=on-failure
+Restart=always
 RestartSec=2
+RestartSteps=1
+RestartMaxDelaySec=15
 WorkingDirectory=/var/app/gmenu2x
 Environment="HOME=/var/app/gmenu2x"
 ExecStart=/var/app/gmenu2x/gmenu2x-service
