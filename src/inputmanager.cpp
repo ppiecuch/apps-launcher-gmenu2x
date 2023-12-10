@@ -60,7 +60,7 @@ void InputManager::initJoysticks(bool reinit) {
 	for (int x = 0; x < nj; x++) {
 		SDL_Joystick *joy = SDL_JoystickOpen(x);
 		if (joy) {
-			INFO("Initialized joystick: '%s'", SDL_JoystickName(x));
+			INFO("Initialized joystick %d: '%s'\n  - hats: %d\n  - buttons: %d", x, SDL_JoystickName(x), SDL_JoystickNumHats (x), SDL_JoystickNumButtons(x));
 			joysticks.push_back(joy);
 		}
 		else WARNING("Failed to initialize joystick: %i", x);
