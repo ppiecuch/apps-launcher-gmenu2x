@@ -275,6 +275,9 @@ void GMenu2X::quit_nosave() {
 	hwDeinit();
 }
 
+static const string _exe_path = exe_path();
+static const string _exe_name = exe_name();
+
 void GMenu2X::main(bool autoStart) {
 #ifdef RASPBERRY_PI
 # ifndef FRAMEBUFFER
@@ -283,9 +286,13 @@ void GMenu2X::main(bool autoStart) {
 	putenv((char*)"FRAMEBUFFER=" FRAMEBUFFER);
 	putenv((char*)"SDL_FBDEV=" FRAMEBUFFER);
 #endif
+
+	if (!CARD_ROOT)
+		CARD_ROOT = _exe_path.c_str();
+
 	hwInit();
 
-	chdir(exe_path().c_str());
+	chdir(_exe_path.c_str());
 
 	readConfig();
 
