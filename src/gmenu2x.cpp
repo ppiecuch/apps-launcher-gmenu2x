@@ -311,15 +311,16 @@ void GMenu2X::main(bool autoStart) {
 	setenv("SDL_NOMOUSE", "1", 1);
 	string prevDateTime = confStr["datetime"];	
 	string freshDateTime = get_date_time();
-		if (prevDateTime > freshDateTime) {
-			set_date_time(prevDateTime.c_str());
-		}
+	if (prevDateTime > freshDateTime) {
+		set_date_time(prevDateTime.c_str());
+	}
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) < 0) {
 		ERROR("Could not initialize SDL: %s", SDL_GetError());
 		quit();
 		return;
 	}
+
 	SDL_ShowCursor(SDL_DISABLE);
 
 	input.init(exe_path() + "/input.conf");
