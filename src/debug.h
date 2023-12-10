@@ -28,26 +28,26 @@
 
 
 #define D(str, ...) \
-	fprintf(stdout, DEBUG_START "%s:%d %s: " str LOG_END, __FILE__, __LINE__, __func__,  ##__VA_ARGS__)
+	{ fprintf(stdout, DEBUG_START "%s:%d %s: " str LOG_END, __FILE__, __LINE__, __func__,  ##__VA_ARGS__); fflush(stdout); }
 
 #if (LOG_LEVEL >= DEBUG_L)
 	#define DEBUG(str, ...) \
-	fprintf(stdout, DEBUG_START str LOG_END, ##__VA_ARGS__)
+	{ fprintf(stdout, DEBUG_START str LOG_END, ##__VA_ARGS__); fflush(stdout); }
 #endif
 
 #if (LOG_LEVEL >= INFO_L)
 	#define INFO(str, ...) \
-	fprintf(stdout, INFO_START str LOG_END, ##__VA_ARGS__)
+	{ fprintf(stdout, INFO_START str LOG_END, ##__VA_ARGS__); fflush(stdout); }
 #endif
 
 #if (LOG_LEVEL >= WARNING_L)
 	#define WARNING(str, ...) \
-	fprintf(stderr, WARNING_START str LOG_END, ##__VA_ARGS__)
+	{ fprintf(stderr, WARNING_START str LOG_END, ##__VA_ARGS__); fflush(stderr); }
 #endif
 
 #if (LOG_LEVEL >= ERROR_L)
 	#define ERROR(str, ...) \
-	fprintf(stderr, ERROR_START str LOG_END, ##__VA_ARGS__)
+	{ fprintf(stderr, ERROR_START str LOG_END, ##__VA_ARGS__); fflush(stderr); }
 #endif
 
 
