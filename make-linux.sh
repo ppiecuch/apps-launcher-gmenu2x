@@ -12,4 +12,8 @@ fi
 
 cmd=${1:-dist}
 
-make -f Makefile.linux $cmd USER="$extra_flags"
+if [ "$cmd" == "clean" ]; then
+  cmd=""
+fi
+
+make -f Makefile.linux clean $cmd USER="$extra_flags"
