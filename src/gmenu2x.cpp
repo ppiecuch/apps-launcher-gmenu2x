@@ -318,7 +318,7 @@ void GMenu2X::main(bool autoStart) {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) < 0) {
 		ERROR("Could not initialize SDL: %s", SDL_GetError());
 		quit();
-		return;
+		exit(1);
 	}
 
 	SDL_ShowCursor(SDL_DISABLE);
