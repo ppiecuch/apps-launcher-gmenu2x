@@ -185,7 +185,7 @@ int main(int argc, char * argv[]) {
 	INFO("Starting GMenuNX...");
 
 #ifdef __BUILDINFO__
-	INFO("  - version: %s", xstr(__BUILDINFO__));
+	INFO("  - buildinfo: %s", xstr(__BUILDINFO__));
 #endif
 #ifdef __BUILDTIME__
 	INFO(" - buildtime: %s", xstr(__BUILDTIME__));
