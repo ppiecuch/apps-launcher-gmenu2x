@@ -22,6 +22,6 @@
 
 #include <SDL.h>
 
-int sdl_dump_events (const SDL_Event *evt);
+int sdl_dump_event(const SDL_Event *evt);
 
 #endif

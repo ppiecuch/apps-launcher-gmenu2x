@@ -78,7 +78,7 @@ static int app_fwrite(int category, const char *fmt, ...) {
 }
 
 // Main event decoder
-int sdl_dump_events (const SDL_Event *evt) {
+int sdl_dump_event(const SDL_Event *evt) {
     switch (evt->type) {
         case SDL_QUIT:
             break;
@@ -142,7 +142,7 @@ static int app_on_keyup(const SDL_Event *evt) {
     return 0;
 }
 
-int app_on_mousemove (const SDL_Event *evt) {
+int app_on_mousemove(const SDL_Event *evt) {
     app_fwrite(CAT_MOUSE, "MV: %+d%+d:(%d,%d)",
         evt->motion.xrel,
         evt->motion.yrel,
@@ -152,7 +152,7 @@ int app_on_mousemove (const SDL_Event *evt) {
   return 0;
 }
 
-static int app_on_mousebdown (const SDL_Event *evt) {
+static int app_on_mousebdown(const SDL_Event *evt) {
     app_fwrite(CAT_MOUSE, "PRESS: %d", evt->button.button);
     return 0;
 }
@@ -162,7 +162,7 @@ static int app_on_mousebup(const SDL_Event *evt) {
     return 0;
 }
 
-static int app_on_joyaxis (const SDL_Event *evt) {
+static int app_on_joyaxis(const SDL_Event *evt) {
     app_fwrite(CAT_JOY, "%d/AXIS/%d: %d",
         evt->jaxis.which,
         evt->jaxis.axis,
@@ -171,7 +171,7 @@ static int app_on_joyaxis (const SDL_Event *evt) {
     return 0;
 }
 
-static int app_on_joyhat (const SDL_Event *evt) {
+static int app_on_joyhat(const SDL_Event *evt) {
     app_fwrite(CAT_JOY, "%d/HAT/%d: %d",
         evt->jhat.which,
         evt->jhat.hat,
@@ -180,7 +180,7 @@ static int app_on_joyhat (const SDL_Event *evt) {
     return 0;
 }
 
-static int app_on_joyball (const SDL_Event *evt) {
+static int app_on_joyball(const SDL_Event *evt) {
     app_fwrite(CAT_JOY, "%d/BALL/%d: %+d%+d",
         evt->jball.which,
         evt->jball.ball,
@@ -190,7 +190,7 @@ static int app_on_joyball (const SDL_Event *evt) {
     return 0;
 }
 
-static int app_on_joybdown (const SDL_Event *evt) {
+static int app_on_joybdown(const SDL_Event *evt) {
     app_fwrite(CAT_JOY, "%d/PRESS: %d",
         evt->jbutton.which,
         evt->jbutton.button
@@ -198,7 +198,7 @@ static int app_on_joybdown (const SDL_Event *evt) {
     return 0;
 }
 
-static int app_on_joybup (const SDL_Event *evt) {
+static int app_on_joybup(const SDL_Event *evt) {
     return app_fwrite(CAT_JOY, "%d/RELEASE: %d",
         evt->jbutton.which,
         evt->jbutton.button

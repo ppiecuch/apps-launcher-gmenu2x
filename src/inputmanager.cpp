@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Massimiliano Torromeo   *
- *   massimiliano.torromeo@gmail.com   *
+ *   Copyright (C) 2006 by Massimiliano Torromeo                           *
+ *   massimiliano.torromeo@gmail.com                                       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "debug.h"
+#include "dumpevent.h"
 #include "inputmanager.h"
 #include "utilities.h"
 #include "gmenu2x.h"
@@ -98,6 +99,7 @@ void InputManager::init(const string &conffile) {
 	}
 
 #ifdef __APPLE__
+	// Default action for quit
 	InputMap map;
 	map.type = MAPPING_TYPE_KEYPRESS;
 	map.value = SDLK_q;
@@ -190,6 +192,8 @@ bool InputManager::update(bool wait) {
 	SDL_JoystickUpdate();
 	if (wait) SDL_WaitEvent(&event);
 	else if (!SDL_PollEvent(&event)) return false;
+
+	sdl_dump_event(&event);
 
 	if (timer && (event.type == SDL_JOYAXISMOTION || event.type == SDL_JOYHATMOTION)) {
 		dropEvents(false);
