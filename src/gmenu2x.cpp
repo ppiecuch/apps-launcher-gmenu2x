@@ -188,7 +188,7 @@ int main(int argc, char * argv[]) {
 	INFO("  - buildinfo: %s", xstr(__BUILDINFO__));
 #endif
 #ifdef __BUILDTIME__
-	INFO(" - buildtime: %s", xstr(__BUILDTIME__));
+	INFO("  - buildtime: %s", xstr(__BUILDTIME__));
 #endif
 
 	signal(SIGINT,  &quit_all);
