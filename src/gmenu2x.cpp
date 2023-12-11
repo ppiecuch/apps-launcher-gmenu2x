@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Massimiliano Torromeo   *
- *   massimiliano.torromeo@gmail.com   *
+ *   Copyright (C) 2006 by Massimiliano Torromeo                           *
+ *   massimiliano.torromeo@gmail.com                                       *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -120,6 +120,9 @@ const char *CARD_ROOT = getenv("HOME");
 #define DEFAULT_TEFIX -1
 #endif
 
+#define xstr(s) str(s)
+#define str(s) #s
+
 #include "menu.h"
 
 // Note: Keep this in sync with the enum!
@@ -180,6 +183,13 @@ static void restart() {
 
 int main(int argc, char * argv[]) {
 	INFO("Starting GMenuNX...");
+
+#ifdef __BUILDINFO__
+	INFO("  - version: %s", xstr(__BUILDINFO__));
+#endif
+#ifdef __BUILDTIME__
+	INFO(" - buildtime: %s", xstr(__BUILDTIME__));
+#endif
 
 	signal(SIGINT,  &quit_all);
 	signal(SIGSEGV, &quit_all);
@@ -980,10 +990,6 @@ void GMenu2X::writeTmp(int selelem, const string &selectordir) {
 }
 
 void GMenu2X::readConfig() {
-#if defined (__BUILDTIME__)
-#define xstr(s) str(s)
-#define str(s) #s
-#endif
 	string conf = exe_path() + "/gmenu2x.conf";
 	// Defaults *** Sync with default values in writeConfig
 	confInt["saveSelection"] = 1;
