@@ -148,7 +148,15 @@ void InputManager::init(const string &conffile) {
 				map.value = atoi(values[2].c_str());
 				map.treshold = 0;
 				actions[action].maplist.push_back(map);
-				// INFO("ADDING: joystickbutton %d  %d ", map.num, map.value);
+				// INFO("ADDING: joystickbutton %d %d ", map.num, map.value);
+			} else if (values[0] == "joystickbutton" && values.size() == 2) {
+				InputMap map;
+				map.type = MAPPING_TYPE_BUTTON;
+				map.num = atoi(values[1].c_str());
+				map.value = -1;
+				map.treshold = -1;
+				actions[action].maplist.push_back(map);
+				// INFO("ADDING: joystickbutton %d %d ", map.num, map.value);
 			} else if (values[0] == "joystickaxis" && values.size() == 4) {
 				InputMap map;
 				map.type = MAPPING_TYPE_AXIS;
@@ -316,7 +324,11 @@ bool InputManager::isActive(int action) {
 		switch (map.type) {
 			case MAPPING_TYPE_BUTTON:
 				for (int j = 0; j < joysticks.size(); j++) {
-					if (SDL_JoystickGetButton(joysticks[j], map.value)) return true;
+					if (map.value == -1)
+						if (SDL_JoystickGetButton(joysticks[j], map.value))
+							return true;
+						else if (SDL_JoystickGetHat(joysticks[j], map.num) == map.value)
+							return true;
 				}
 				break;
 			case MAPPING_TYPE_AXIS:
