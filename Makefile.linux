@@ -1,7 +1,7 @@
 PLATFORM := linux
 
 BUILDTIME := $(shell date +%s)
-VERSION   := "0.9.1"
+BUILDINFO   := 0.9.1
 
 CC      := gcc
 CXX     := g++
@@ -20,7 +20,7 @@ else
 	BDYNAMIC    := -Wl,-Bdynamic
 endif
 
-CFLAGS = -DPLATFORM=\"$(PLATFORM)\" -D__BUILDTIME__="$(BUILDTIME)" -D__BUILDINFO__="$(VERSION)" -DLOG_LEVEL=4 $(USER)
+CFLAGS = -DPLATFORM=\"$(PLATFORM)\" -D__BUILDTIME__="$(BUILDTIME)" -D__BUILDINFO__="$(BUILDINFO)" -DLOG_LEVEL=4 $(USER)
 CFLAGS += --std=c++14 -O0 -ggdb -g -pg $(SDL_CFLAGS)
 CFLAGS += -Wundef -Wno-deprecated -Wno-unknown-pragmas -Wno-format -Wno-narrowing
 CFLAGS += -Isrc -Isrc/libopk -I/opt/local/include/SDL -I/opt/macports/include/SDL2
