@@ -1,6 +1,8 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#include <stdio.h>
+
 #define NODEBUG_L 0
 #define ERROR_L 1
 #define WARNING_L 2
