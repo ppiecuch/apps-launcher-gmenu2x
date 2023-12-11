@@ -325,7 +325,7 @@ bool InputManager::isActive(int action) {
 			case MAPPING_TYPE_BUTTON:
 				for (int j = 0; j < joysticks.size(); j++) {
 					if (map.value == -1)
-						if (SDL_JoystickGetButton(joysticks[j], map.value))
+						if (SDL_JoystickGetButton(joysticks[j], map.num))
 							return true;
 						else if (SDL_JoystickGetHat(joysticks[j], map.num) == map.value)
 							return true;
