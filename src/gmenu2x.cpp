@@ -368,70 +368,70 @@ void GMenu2X::main(bool autoStart) {
 		if (confStr["lastCommand"] == "" || confStr["lastDirectory"] == "") {
 			switch (randomInt) {
 				case 0: {
-				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Press 'Y' now quickly to reset gmenu2x.cfg"]);
-				mb.setAutoHide(1000);
-				mb.setBgAlpha(0);
-				mb.exec();
-				break;
+					MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Press 'Y' now quickly to reset gmenu2x.cfg"]);
+					mb.setAutoHide(1000);
+					mb.setBgAlpha(0);
+					mb.exec();
+					break;
 				}
 				case 1: {
-				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'X' to change Date & Time"]);
-				mb.setAutoHide(1000);
-				mb.setBgAlpha(0);
-				mb.exec();		
-				break;
+					MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'X' to change Date & Time"]);
+					mb.setAutoHide(1000);
+					mb.setBgAlpha(0);
+					mb.exec();
+					break;
 				}
 				case 2: {
-				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'SELECT' to disable TV-output"]);
-				mb.setAutoHide(1000);
-				mb.setBgAlpha(0);
-				mb.exec();
-				break;
+					MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'SELECT' to disable TV-output"]);
+					mb.setAutoHide(1000);
+					mb.setBgAlpha(0);
+					mb.exec();
+					break;
 				}
 				case 3: {
-				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'START' to enter Suspend Mode"]);
-				mb.setAutoHide(1000);
-				mb.setBgAlpha(0);
-				mb.exec();
-				break;
+					MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'START' to enter Suspend Mode"]);
+					mb.setAutoHide(1000);
+					mb.setBgAlpha(0);
+					mb.exec();
+					break;
 				}
 				case 4: {
-				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: You can AutoStart any game/app!? See settings"]);
-				mb.setAutoHide(1000);
-				mb.setBgAlpha(0);
-				mb.exec();
-				break;
+					MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: You can AutoStart any game/app!? See settings"]);
+					mb.setAutoHide(1000);
+					mb.setBgAlpha(0);
+					mb.exec();
+					break;
 				}
 				case 5: {
-				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'Y' to restart GMenu2X"]);
-				mb.setAutoHide(1000);
-				mb.setBgAlpha(0);
-				mb.exec();
-				break;
+					MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Hold 'Y' to restart GMenu2X"]);
+					mb.setAutoHide(1000);
+					mb.setBgAlpha(0);
+					mb.exec();
+					break;
 				}
 				default: {
-				MessageBox mb(this, tr["Loading"]);
-				mb.setAutoHide(1);
-				mb.setBgAlpha(0);
-				mb.exec();
-				break;
+					MessageBox mb(this, tr["Loading"]);
+					mb.setAutoHide(1);
+					mb.setBgAlpha(0);
+					mb.exec();
+					break;
 				}
 			}
 		} else if (!confInt["dialogAutoStart"]) {
 			switch (randomInt) {
 				case 0: case 1: case 2: {
-				MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Press 'Y' now quickly to reset gmenu2x.cfg"]);
-				mb.setAutoHide(1000);
-				mb.setBgAlpha(0);
-				mb.exec();
-				break;
+					MessageBox mb(this, tr["Loading."]+"\n"+tr["Hint: Press 'Y' now quickly to reset gmenu2x.cfg"]);
+					mb.setAutoHide(1000);
+					mb.setBgAlpha(0);
+					mb.exec();
+					break;
 				}
 				default: {
-				MessageBox mb(this, tr["Loading"]);
-				mb.setAutoHide(1);
-				mb.setBgAlpha(0);
-				mb.exec();
-				break;
+					MessageBox mb(this, tr["Loading"]);
+					mb.setAutoHide(1);
+					mb.setBgAlpha(0);
+					mb.exec();
+					break;
 				}
 			}
 		} else {
@@ -515,8 +515,8 @@ void GMenu2X::main(bool autoStart) {
 
 bool GMenu2X::inputCommonActions(bool &inputAction) {
 	if (powerManager->suspendActive) {
-		// SUSPEND ACTIVE
-		while (!(input[POWER] || input[SETTINGS] || input[UDC_CONNECT] || input[UDC_REMOVE] || input[MMC_INSERT] || input[MMC_REMOVE])) {
+		// Suspend active - leave if eg. SETTINGS or MENU selected
+		while (!(input[POWER] || input[SETTINGS] ||  input[MENU] || input[UDC_CONNECT] || input[UDC_REMOVE] || input[MMC_INSERT] || input[MMC_REMOVE])) {
 			input.update();
 		}
 
@@ -534,7 +534,7 @@ bool GMenu2X::inputCommonActions(bool &inputAction) {
 
 	int wasActive = 0;
 
-	while (input[MODIFIER]) { // MODIFIER HOLD
+	while (input[MODIFIER]) { // MODIFIER hold
 		wasActive = MODIFIER;
 
 		input.update();

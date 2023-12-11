@@ -57,6 +57,7 @@ uint32_t PowerManager::doSuspend(uint32_t interval, void *param) {
 		return interval;
 	}
 
+	INFO("Leaving suspend mode");
 	// INFO("backlight: %i, globalVolume: %i", PowerManager::instance->gmenu2x->confInt["backlight"], PowerManager::instance->gmenu2x->confInt["globalVolume"]);
 	PowerManager::instance->gmenu2x->setBacklight(max(10, PowerManager::instance->gmenu2x->confInt["backlight"]));
 	PowerManager::instance->gmenu2x->setVolume(PowerManager::instance->gmenu2x->confInt["globalVolume"]);
