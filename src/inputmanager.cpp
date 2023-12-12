@@ -324,11 +324,13 @@ bool InputManager::isActive(int action) {
 		switch (map.type) {
 			case MAPPING_TYPE_BUTTON:
 				for (int j = 0; j < joysticks.size(); j++) {
-					if (map.value == -1)
+					// INFO("BUTTON %d/%d (%d): GetButton: %d GetHat: %d", j, map.num, map.value, SDL_JoystickGetButton(joysticks[j], map.num), SDL_JoystickGetHat(joysticks[j], map.num));
+					if (map.value == -1) {
 						if (SDL_JoystickGetButton(joysticks[j], map.num))
 							return true;
-						else if (SDL_JoystickGetHat(joysticks[j], map.num) == map.value)
+					} else if (SDL_JoystickGetHat(joysticks[j], map.num) == map.value) {
 							return true;
+					}
 				}
 				break;
 			case MAPPING_TYPE_AXIS:
