@@ -58,6 +58,7 @@
 #include "menusettingdir.h"
 #include "imageviewerdialog.h"
 #include "menusettingdatetime.h"
+#include "instrumentfunctions.h"
 #include "debug.h"
 
 #if defined(OPK_SUPPORT)
@@ -70,7 +71,7 @@ using std::ofstream;
 using std::stringstream;
 using namespace fastdelegate;
 
-#define sync() sync(); system("sync &");
+#define sync() { sync(); system("sync &"); }
 
 enum vol_mode_t {
 	VOLUME_MODE_MUTE, VOLUME_MODE_PHONES, VOLUME_MODE_NORMAL
@@ -169,14 +170,15 @@ static void quit_all(int err) {
 }
 
 static void restart() {
-	WARNING("Re-launching gmenu2x");
 	if (_run_service) {
+		WARNING("Leaving application");
  		if (GMenu2X::instance)
     		delete GMenu2X::instance;
 		exit(0);
 	} else {
 		chdir(exe_path().c_str());
 		string exe = "./" + exe_name();
+		WARNING("Re-launching %s", exe_name().c_str());
 		execlp(exe.c_str(), exe.c_str(), NULL);
 	}
 }
@@ -200,6 +202,11 @@ int main(int argc, char * argv[]) {
 		_run_service = true;
 	}
 
+	if(strstr(exe_name().c_str(), "-instrument")) {
+		INFO("Enable instrumentation...");
+		_enable_instruments = true;
+	}
+
 	bool autoStart = false;
 	for (int i = 0; i < argc; i++){
 		if(strcmp(argv[i],"--autostart")==0) {
@@ -208,6 +215,9 @@ int main(int argc, char * argv[]) {
 		} else if(strcmp(argv[i],"--service")==0 && !_run_service) {
 			INFO("Enable service mode...");
 			_run_service = true;
+		} else if(strcmp(argv[i],"--instrument")==0 && !_enable_instruments) {
+			INFO("Enable instrumentation...");
+			_enable_instruments = true;
 		}
 	}
 
