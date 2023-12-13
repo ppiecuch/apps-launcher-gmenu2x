@@ -22,7 +22,22 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#include "debug.h"
+
+#ifdef __APPLE__
+# ifdef __has_include
+#  if __has_include(<bfd.h>)
+#   define ENABLE_BFD
+#  endif
+# endif
+#else
+# define ENABLE_BFD
+#endif
+
+#ifdef ENABLE_BFD
 #include <bfd.h>
+#endif
 
 /*
  * Generate instrumentation calls for entry and exit to functions.
@@ -70,6 +85,7 @@ void __cyg_profile_func_exit(void *this_fn, void *call_site) {
 }
 
 static void print_debug(void *this_fn, void *call_site, action_type action) {
+#ifdef ENABLE_BFD
 	static bfd* abfd;
 	static asymbol **symtab;
 	static long symcount;
@@ -246,6 +262,5 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 		}
 	}
 	fflush(stdout);
+#endif
 }
-
-/* vi: set tabstop=4 softtabstop=0 shiftwidth=4 smarttab autoindent : */
