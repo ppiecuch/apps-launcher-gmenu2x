@@ -79,12 +79,12 @@ extern "C" void __cyg_profile_func_exit(void *this_fn, void *call_site) ND_NO_IN
 
 static void print_debug(void *this_fn, void *call_site, action_type action) ND_NO_INSTRUMENT;
 
-void __cyg_profile_func_enter(void *this_fn, void *call_site) {
+extern "C" void __cyg_profile_func_enter(void *this_fn, void *call_site) {
 	if (_enable_instruments)
 		print_debug(this_fn, call_site, ENTER);
 }
 
-void __cyg_profile_func_exit(void *this_fn, void *call_site) {
+extern "C" void __cyg_profile_func_exit(void *this_fn, void *call_site) {
 	if (_enable_instruments)
 		print_debug(this_fn, call_site, EXIT);
 }
@@ -265,5 +265,7 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 		}
 	}
 	fflush(stdout);
+#else
+# warning Instruments not available.
 #endif
 }
