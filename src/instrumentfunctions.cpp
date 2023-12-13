@@ -40,8 +40,6 @@
 #include <bfd.h>
 #endif
 
-bool _enable_instruments = false;
-
 /*
  * Generate instrumentation calls for entry and exit to functions.
  * Just after function entry and just before function exit, the
@@ -94,13 +92,13 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 	static long symcount = 0;
 	static asection *text = NULL;
 	static bfd_vma vma;
-	static int instrument_set = int(_enable_instruments);
-	static int instrument_off = int(_enable_instruments);
-	static int instrument_global = int(_enable_instruments);
+	static int instrument_set = 0;
+	static int instrument_off = 0;
+	static int instrument_global = 0;
 
 	if (!instrument_set) {
 		/* Get the configuration environment variable INSTRUMENT value if any */
-		static char *instrument_type = getenv("INSTRUMENT");
+		const char *instrument_type = getenv("INSTRUMENT");
 		/* unset or set to an empty string ? */
 		if (instrument_type == NULL ||
 			!strncmp(instrument_type, "", sizeof(""))) {
