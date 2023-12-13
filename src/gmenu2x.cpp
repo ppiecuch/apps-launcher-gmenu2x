@@ -213,7 +213,7 @@ int main(int argc, char * argv[]) {
 			_run_service = true;
 		} else if(strcmp(argv[i],"--instruments")==0) {
 			INFO("Enable instrumentation to INSTRUMENT=g");
-			setenv("INSTRUMENT=g");
+			setenv("INSTRUMENT", "g", 1);
 		}
 	}
 
