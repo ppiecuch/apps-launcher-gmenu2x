@@ -1,4 +1,5 @@
 /***************************************************************************
+/***************************************************************************
  *   Copyright (C) 2006 by Massimiliano Torromeo                           *
  *   massimiliano.torromeo@gmail.com                                       *
  *                                                                         *
@@ -202,7 +203,7 @@ int main(int argc, char * argv[]) {
 		_run_service = true;
 	}
 
-	if(strstr(exe_name().c_str(), "-instrument")) {
+	if(strstr(exe_name().c_str(), "-instruments")) {
 		INFO("Enable instrumentation...");
 		_enable_instruments = true;
 	}
@@ -215,7 +216,7 @@ int main(int argc, char * argv[]) {
 		} else if(strcmp(argv[i],"--service")==0 && !_run_service) {
 			INFO("Enable service mode...");
 			_run_service = true;
-		} else if(strcmp(argv[i],"--instrument")==0 && !_enable_instruments) {
+		} else if(strcmp(argv[i],"--instruments")==0 && !_enable_instruments) {
 			INFO("Enable instrumentation...");
 			_enable_instruments = true;
 		}
