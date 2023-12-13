@@ -335,7 +335,7 @@ bool InputManager::isActive(int action) {
 				break;
 			case MAPPING_TYPE_AXIS:
 				if (map.num < joysticks.size()) {
-					int axyspos = SDL_JoystickGetAxis(joysticks[map.num], map.value);
+					const int axyspos = SDL_JoystickGetAxis(joysticks[map.num], map.value);
 					if (map.treshold < 0 && axyspos < map.treshold) return true;
 					if (map.treshold > 0 && axyspos > map.treshold) return true;
 				}
