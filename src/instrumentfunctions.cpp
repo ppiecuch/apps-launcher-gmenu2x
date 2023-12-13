@@ -80,25 +80,23 @@ extern "C" void __cyg_profile_func_exit(void *this_fn, void *call_site) ND_NO_IN
 static void print_debug(void *this_fn, void *call_site, action_type action) ND_NO_INSTRUMENT;
 
 void __cyg_profile_func_enter(void *this_fn, void *call_site) {
-	if (_enable_instruments)
-		print_debug(this_fn, call_site, ENTER);
+	print_debug(this_fn, call_site, ENTER);
 }
 
 void __cyg_profile_func_exit(void *this_fn, void *call_site) {
-	if (_enable_instruments)
-		print_debug(this_fn, call_site, EXIT);
+	print_debug(this_fn, call_site, EXIT);
 }
 
 static void print_debug(void *this_fn, void *call_site, action_type action) {
 #ifdef ENABLE_BFD
-	static bfd* abfd;
-	static asymbol **symtab;
-	static long symcount;
-	static asection *text;
+	static bfd *abfd = NULL;
+	static asymbol **symtab = NULL;
+	static long symcount = 0;
+	static asection *text = NULL;
 	static bfd_vma vma;
-	static int instrument_set;
-	static int instrument_off;
-	static int instrument_global;
+	static int instrument_set = int(_enable_instruments);
+	static int instrument_off = int(_enable_instruments);
+	static int instrument_global = int(_enable_instruments);
 
 	if (!instrument_set) {
 		/* Get the configuration environment variable INSTRUMENT value if any */
@@ -109,13 +107,10 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 			instrument_off = 1;
 		} else {
 			/* set to "global" or "g" ? */
-			if (!strncmp(instrument_type, "global", sizeof("global")) ||
-				!strncmp(instrument_type, "g", sizeof("g")))
+			if (!strncmp(instrument_type, "global", sizeof("global")) || !strncmp(instrument_type, "g", sizeof("g"))) {
 				instrument_global = 1;
-			else if (strncmp(instrument_type, "all", sizeof("all")) &&
-					 strncmp(instrument_type, "a", sizeof("a"))) {
-				fprintf(stderr, "INSTRUMENT can be only \"\", \"all\", \"a\", "
-						"\"global\" or \"g\".\n");
+			} else if (strncmp(instrument_type, "all", sizeof("all")) && strncmp(instrument_type, "a", sizeof("a"))) {
+				fprintf(stderr, "INSTRUMENT can be only \"\", \"all\", \"a\", \"global\" or \"g\".\n");
 				exit(1);
 			}
 		}
@@ -123,7 +118,7 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 	}
 
 	if (instrument_off)
-			return;
+		return;
 
 	/* If no errors, this block should be executed one time */
 	if (!abfd) {
@@ -177,11 +172,8 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 
 	if (instrument_global) {
 		symbol_info syminfo;
-		int found;
-		long i;
-
-		i = 0;
-		found = 0;
+		int found = 0;
+		long i = 0;
 		while (i < symcount && !found) {
 			bfd_get_symbol_info(abfd, symtab[i], &syminfo);
 			if ((void *)syminfo.value == this_fn) {
@@ -202,16 +194,13 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 		const char *func;
 		unsigned int line;
 
-		if (!bfd_find_nearest_line(abfd, text, symtab, (bfd_vma)this_fn - vma,
-								   &file, &func, &line)) {
+		if (!bfd_find_nearest_line(abfd, text, symtab, (bfd_vma)this_fn - vma, &file, &func, &line)) {
 			printf("[ERROR bfd_find_nearest_line this_fn]");
 		} else {
-			int i;
-
 			if (action == ENTER)
 				profile_func_level += 1;
 			/* Indentation */
-			for (i = 0 ; i < profile_func_level ; i++)
+			for (int i = 0 ; i < profile_func_level ; i++)
 				putchar(' ');
 			if (action == ENTER)
 				printf("[>> ");
@@ -230,9 +219,7 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 				if ((bfd_vma)call_site < vma) {
 					printf("[ERROR address call_site]");
 				} else {
-					if (!bfd_find_nearest_line(abfd, text, symtab,
-											   (bfd_vma)call_site - vma, &file,
-											   &func, &line)) {
+					if (!bfd_find_nearest_line(abfd, text, symtab, (bfd_vma)call_site - vma, &file, &func, &line)) {
 						printf("[ERROR bfd_find_nearest_line call_site]");
 					} else {
 						printf(" from ");
