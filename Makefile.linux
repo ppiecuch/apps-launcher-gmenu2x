@@ -58,8 +58,7 @@ debug: $(OBJS)
 
 shared: debug
 	$(STRIP) $(TARGET)-debug -o $(TARGET)
-	$(COPY) $(TARGET) $(TARGET)-service
-	$(COPY) $(TARGET)-debug $(TARGET)-instruments
+	$(STRIP) $(TARGET)-debug -o $(TARGET)-service
 
 clean:
 	make -C src/libopk clean
