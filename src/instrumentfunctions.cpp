@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "instrumentfunctions.h"
 #include "debug.h"
 
 #ifdef __APPLE__
@@ -96,10 +97,8 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 	static int instrument_global;
 
 	if (!instrument_set) {
-		static char *instrument_type;
-
 		/* Get the configuration environment variable INSTRUMENT value if any */
-		instrument_type = getenv("INSTRUMENT");
+		static char *instrument_type = getenv("INSTRUMENT");
 		/* unset or set to an empty string ? */
 		if (instrument_type == NULL ||
 			!strncmp(instrument_type, "", sizeof(""))) {
