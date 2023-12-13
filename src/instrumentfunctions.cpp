@@ -26,19 +26,9 @@
 #include "instrumentfunctions.h"
 #include "debug.h"
 
-#ifdef __APPLE__
-# ifdef __has_include
-#  if __has_include(<bfd.h>)
-#   define ENABLE_BFD
-#  endif
-# endif
-#else
-# define ENABLE_BFD
-#endif
+#ifdef INSTRUMENT
 
-#ifdef ENABLE_BFD
 #include <bfd.h>
-#endif
 
 /*
  * Generate instrumentation calls for entry and exit to functions.
@@ -84,7 +74,6 @@ extern "C" void __cyg_profile_func_exit(void *this_fn, void *call_site) {
 }
 
 static void print_debug(void *this_fn, void *call_site, action_type action) {
-#ifdef ENABLE_BFD
 	static bfd *abfd = NULL;
 	static asymbol **symtab = NULL;
 	static long symcount = 0;
@@ -248,7 +237,10 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 		}
 	}
 	fflush(stdout);
-#else
-# warning Instruments not available.
-#endif
 }
+
+#else
+
+# warning Instruments not available.
+
+#endif // INSTRUMENT
