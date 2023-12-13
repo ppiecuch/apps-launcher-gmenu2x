@@ -21,6 +21,4 @@
 #ifndef __INSTRUMENTFUNCTION_H__
 #define __INSTRUMENTFUNCTION_H__
 
-extern bool _enable_instruments;
-
 #endif
