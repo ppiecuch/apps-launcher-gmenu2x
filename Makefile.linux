@@ -21,13 +21,13 @@ else
 endif
 
 CFLAGS = -DPLATFORM=\"$(PLATFORM)\" -D__BUILDTIME__="$(BUILDTIME)" -D__BUILDINFO__="$(BUILDINFO)" -DLOG_LEVEL=4 $(USER)
-CFLAGS += --std=c++14 -O0 -ggdb -g -pg $(SDL_CFLAGS)
+CFLAGS += --std=c++14 -O0 -ggdb -g -pg $(SDL_CFLAGS) -finstrument-functions
 CFLAGS += -Wundef -Wno-deprecated -Wno-unknown-pragmas -Wno-format -Wno-narrowing
 CFLAGS += -Isrc -Isrc/libopk -I/opt/local/include/SDL -I/opt/macports/include/SDL2
 CFLAGS += -DTARGET_LINUX -DHW_TVOUT -DHW_UDC -DHW_EXT_SD -DHW_SCALER -DOPK_SUPPORT -DIPK_SUPPORT
 
 LDFLAGS = $(BSTATIC) src/libopk/libopk.a
-LDFLAGS += $(BDYNAMIC) -lz $(SDL_LIBS) -lSDL_image -lSDL_ttf
+LDFLAGS += $(BDYNAMIC) -lz $(SDL_LIBS) -lSDL_image -lSDL_ttf -lbfd
 
 OBJDIR = /tmp/gmenu2x/$(PLATFORM)
 DISTDIR = dist/$(PLATFORM)
