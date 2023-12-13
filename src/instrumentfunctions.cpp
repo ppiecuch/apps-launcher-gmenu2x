@@ -57,7 +57,7 @@ typedef enum {
 
 extern "C" void __cyg_profile_func_enter(void *this_fn, void *call_site) ND_NO_INSTRUMENT;
 
-xtern "C" void __cyg_profile_func_exit(void *this_fn, void *call_site) ND_NO_INSTRUMENT;
+extern "C" void __cyg_profile_func_exit(void *this_fn, void *call_site) ND_NO_INSTRUMENT;
 
 static void print_debug(void *this_fn, void *call_site, action_type action) ND_NO_INSTRUMENT;
 
@@ -226,7 +226,7 @@ static void print_debug(void *this_fn, void *call_site, action_type action) {
 						if (file == NULL || *file == '\0')
 							printf(" ??:");
 						else {
-							char *slashp = strrchr(file, '/');
+							const char *slashp = strrchr(file, '/');
 							if (slashp != NULL)
 								file = slashp + 1;
 							printf(" %s:", file);
