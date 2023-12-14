@@ -19,6 +19,56 @@ patch <<"EOP"
 
  """
 
+@@ -146,7 +146,7 @@
+         else:
+             print (f'Warning: could not find backup file for {filename}')
+
+-def do_patch(filelist):
++def do_patch(filelist, exclude = []):
+     global args
+     for filename in filelist:
+         if args.verbose:
+@@ -167,12 +167,13 @@
+                     if len(item.body) > 2 :
+                         revbody = reversed(item.body)
+                         if item.return_type is not None:
+-                            # Corner case: void functions
+-                            if 'void' == item.return_type.name:
+-                                if 'return' != item.body[-2].name:
+-                                    # Function does not end with return clause
+-                                    spaces = calc_insert_point(source, item.body, len(item.body)-1)
+-                                    source = insert(source, '\n'+ ' '*spaces + outprint  , item.body[-1].end)
++                            if not item.name in exclude:
++                                # Corner case: void functions
++                                if 'void' == item.return_type.name:
++                                    if 'return' != item.body[-2].name:
++                                        # Function does not end with return clause
++                                        spaces = calc_insert_point(source, item.body, len(item.body)-1)
++                                        source = insert(source, '\n'+ ' '*spaces + outprint  , item.body[-1].end)
+                         if isinstance( item, ast.Method):
+                             # Only classes can have c/d'tor and the the in_class member
+                             # Corner case: c/d'tor
+@@ -220,6 +221,7 @@
+     parser.add_argument('--recursive', action='store_true', default=False, help='Iteratively patch all *.c *.cpp and *.cc files within the current folder')
+     parser.add_argument('--verbose', action='store_true', help='print verbose messages')
+     parser.add_argument('--quiet', '-q', action='store_true', help='ignore parse errors')
++    parser.add_argument('--exclude', '-x', action='store_true', help='exclude names from patching')
+     args = parser.parse_args()
+     filelist = []
+     if len(args.files ) == 0 :
+@@ -243,7 +245,10 @@
+         do_unpatch(filelist)
+     else:
+         do_backup(filelist)
+-        do_patch(filelist)
++        exclude = []
++        if args.exclude:
++            exclude = args.exclude.split(',')
++        do_patch(filelist, exclude)
+     status = 0
+
+ try:
+
 @@ -224,7 +224,7 @@
      filelist = []
      if len(args.files ) == 0 :
