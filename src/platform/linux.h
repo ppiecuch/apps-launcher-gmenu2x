@@ -15,9 +15,8 @@ int32_t setTVoff() {
 }
 
 uint16_t getDevStatus() {
-	FILE *f;
 	char buf[10000];
-	if ((f = fopen("/proc/bus/input/devices", "r"))) { // if ((f = fopen("/proc/bus/input/handlers", "r"))) {
+	if (FILE *f = fopen("/proc/bus/input/devices", "r")) { // if (FILE *f = fopen("/proc/bus/input/handlers", "r")) {
 		size_t sz = fread(buf, sizeof(char), 10000, f);
 		fclose(f);
 		return sz;
