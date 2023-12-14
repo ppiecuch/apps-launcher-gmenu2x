@@ -47,23 +47,28 @@ void SurfaceCollection::setSkin(const string &skin) {
 
 string SurfaceCollection::getSkinFilePath(const string &file, bool fallback) {
 	string ret = "skins/" + skin + "/" + file;
-	if (file_exists(ret))
+	if (file_exists(ret)) {
 		return ret;
+	}
 
 	if (fallback) {
 		ret = "skins/Default/" + file;
-		if (file_exists(ret))
+		if (file_exists(ret)) {
 			return ret;
+		}
 	}
 
 	return "";
 }
 
 Surface *SurfaceCollection::add(string path, string key) {
-	if (path.empty()) return NULL;
+	if (path.empty()) {
+		return NULL;
+	}
 	if (key.empty()) key = path;
-	if (exists(key)) return surfaces[key]; //del(key);
-
+	if (exists(key)) {
+		return surfaces[key]; //del(key);
+	}
 	Surface *s = NULL;
 
 #if defined(OPK_SUPPORT)
@@ -111,13 +116,17 @@ Surface *SurfaceCollection::add(string path, string key) {
 }
 
 Surface *SurfaceCollection::add(Surface *s, const string &key) {
-	if (exists(key)) return surfaces[key]; //del(key);
+	if (exists(key)) {
+		return surfaces[key]; //del(key);
+	}
 	surfaces[key] = s;
 	return s;
 }
 
 Surface *SurfaceCollection::operator[](const string &key) {
-	if (exists(key)) return surfaces[key];
+	if (exists(key)) {
+		return surfaces[key];
+	}
 	return add(key);
 }
 

@@ -649,7 +649,6 @@ bool GMenu2X::inputCommonActions(bool &inputAction) {
 		confInt["section"] = menu->selSectionIndex();
 		confInt["link"] = menu->selLinkIndex();
 		initMenu();
-
 	} else {
 		return false;
 	}
@@ -677,7 +676,9 @@ string GMenu2X::setBackground(Surface *bg, string wallpaper) {
 			fl.browse();
 			wallpaper = "skins/Default/wallpapers/" + fl.getFiles()[0];
 		}
-		if (sc[wallpaper] == NULL) return "";
+		if (sc[wallpaper] == NULL) {
+			return "";
+		}
 		if (confStr["bgscale"] == "Stretch") sc[wallpaper]->softStretch(this->w, this->h, SScaleStretch);
 		else if (confStr["bgscale"] == "Crop") sc[wallpaper]->softStretch(this->w, this->h, SScaleMax);
 		else if (confStr["bgscale"] == "Aspect") sc[wallpaper]->softStretch(this->w, this->h, SScaleFit);
@@ -895,8 +896,9 @@ void GMenu2X::resetSettings() {
 		MessageBox mb(this, tr["Changes will be applied to ALL"]+"\n"+tr["apps and GMenuNX. Are you sure?"], "skin:icons/exit.png");
 		mb.setButton(CANCEL, tr["Cancel"]);
 		mb.setButton(MANUAL,  tr["Yes"]);
-		if (mb.exec() != MANUAL) return;
-
+		if (mb.exec() != MANUAL) {
+			return;
+		}
 		for (uint32_t s = 0; s < menu->getSections().size(); s++) {
 			for (uint32_t l = 0; l < menu->sectionLinks(s)->size(); l++) {
 				menu->setSectionIndex(s);
@@ -953,7 +955,9 @@ if (sd.exec() && sd.edited() && sd.save) {
 bool GMenu2X::readTmp() {
 	lastSelectorElement = -1;
 	ifstream tmp("/tmp/gmenu2x.tmp", ios_base::in);
-	if (!tmp.is_open()) return false;
+	if (!tmp.is_open()) {
+		return false;
+	}
 
 	string line;
 
@@ -1145,13 +1149,12 @@ void GMenu2X::writeConfig() {
 void GMenu2X::writeSkinConfig() {
 	string skinconf = exe_path() + "/skins/" + confStr["skin"] + "/skin.conf";
 	ofstream inf(skinconf.c_str());
-	if (!inf.is_open()) return;
+	if (!inf.is_open()) {
+		return;
+	}
 
 	for (ConfStrHash::iterator curr = skinConfStr.begin(); curr != skinConfStr.end(); curr++) {
-		if (curr->first.empty() || curr->second.empty()) {
-			continue;
-		}
-
+		if (curr->first.empty() || curr->second.empty()) continue;
 		inf << curr->first << "=\"" << curr->second << "\"" << endl;
 	}
 
@@ -1492,7 +1495,9 @@ void GMenu2X::about() {
 
 void GMenu2X::viewLog() {
 	string logfile = exe_path() + "/log.txt";
-	if (!file_exists(logfile)) return;
+	if (!file_exists(logfile)) {
+		return;
+	}
 
 	TextDialog td(this, tr["Log Viewer"], tr["Last launched program's output"], "skin:icons/ebook.png");
 	td.appendFile(exe_path() + "/log.txt");
@@ -1561,7 +1566,9 @@ void GMenu2X::showManual() {
 	string linkBackdrop = confInt["skinBackdrops"] | BD_DIALOG ? menu->selLinkApp()->getBackdropPath() : "";
 	string linkExec = menu->selLinkApp()->getExec();
 
-	if (linkManual == "") return;
+	if (linkManual == "") {
+		return;
+	}
 
 	TextDialog td(this, linkTitle, linkDescription, linkIcon); //, linkBackdrop);
 
@@ -1704,7 +1711,9 @@ void GMenu2X::reinit(bool showDialog) {
 		MessageBox mb(this, tr["GMenuNX will restart to apply"]+"\n"+tr["the settings. Continue?"], "skin:icons/exit.png");
 		mb.setButton(CONFIRM, tr["Restart"]);
 		mb.setButton(CANCEL,  tr["Cancel"]);
-		if (mb.exec() == CANCEL) return;
+		if (mb.exec() == CANCEL) {
+			return;
+		}
 	}
 
 	quit_nosave();
@@ -1829,7 +1838,9 @@ void GMenu2X::changeSelectorDir() {
 }
 
 void GMenu2X::editLink() {
-	if (menu->selLinkApp() == NULL) return;
+	if (menu->selLinkApp() == NULL) {
+		return;
+	}
 
 	vector<string> pathV;
 	split(pathV, menu->selLinkApp()->getFile(), "/");
@@ -1968,7 +1979,9 @@ void GMenu2X::editLink() {
 		// if section changed move file and update link->file
 		if (oldSection != newSection) {
 			vector<string>::const_iterator newSectionIndex = find(menu->getSections().begin(), menu->getSections().end(), newSection);
-			if (newSectionIndex == menu->getSections().end()) return;
+			if (newSectionIndex == menu->getSections().end()) {
+				return;
+			}
 			string newFileName = "sections/" + newSection + "/" + linkTitle;
 			uint32_t x = 2;
 			while (file_exists(newFileName)) {
@@ -2066,7 +2079,9 @@ void GMenu2X::deleteSection() {
 	MessageBox mb(this, tr["Delete section"] + " '" +  menu->selSectionName() + "'\n" + tr["THIS CAN'T BE UNDONE"] + "\n" + tr["Are you sure?"], menu->getSectionIcon());
 	mb.setButton(MANUAL, tr["Yes"]);
 	mb.setButton(CANCEL,  tr["No"]);
-	if (mb.exec() != MANUAL) return;
+	if (mb.exec() != MANUAL) {
+		return;
+	}
 	ledOn();
 	if (rmtree(exe_path() + "/sections/" + menu->selSection())) {
 		menu->deleteSelectedSection();
@@ -2095,19 +2110,22 @@ void GMenu2X::opkInstall(string path) {
 
 #if defined(IPK_SUPPORT)
 string GMenu2X::ipkName(string cmd) {
-	if (!file_exists("/usr/bin/opkg"))
+	if (!file_exists("/usr/bin/opkg")) {
 		return "";
+	}
 	char package[128] = {0,0,0,0,0,0,0,0};
 	cmd = "opkg search \"*" + base_name(cmd) + "\" | cut -f1 -d' '";
 	FILE *fp = popen(cmd.c_str(), "r");
-	if (fp == NULL)
+	if (fp == NULL) {
 		return "";
+	}
 
 	fgets(package, sizeof(package) - 1, fp);
 	pclose(fp);
 
-	if (package[0] == 0)
+	if (package[0] == 0) {
 		return "";
+	}
 
 	return trim((string)package);
 }
@@ -2277,7 +2295,9 @@ int GMenu2X::drawButtonRight(Surface *s, const string &btn, const string &text, 
 }
 
 void GMenu2X::drawScrollBar(uint32_t pagesize, uint32_t totalsize, uint32_t pagepos, SDL_Rect scrollRect, const uint8_t align) {
-	if (totalsize <= pagesize) return;
+	if (totalsize <= pagesize) {
+		return;
+	}
 	SDL_Rect bar = {2, 2, 2, 2};
 
 	if ((align & VAlignBottom) || (align & VAlignTop)) {
