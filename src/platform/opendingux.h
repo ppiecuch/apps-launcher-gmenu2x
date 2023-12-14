@@ -1,7 +1,6 @@
 #ifndef HW_OPENDINGUX_H
 #define HW_OPENDINGUX_H
 
-
 int32_t setTVoff() {
 	return 0;
 }
