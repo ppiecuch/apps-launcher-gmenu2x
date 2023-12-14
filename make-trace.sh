@@ -18,7 +18,6 @@ patch <<"EOP"
 +#define TRACE_ME_OUT { struct timeval tp; gettimeofday(&tp , NULL); printf("[%4ld.%4ld] Out: %s\\n",tp.tv_sec , tp.tv_usec,__PRETTY_FUNCTION__); }
 
  """
-
 @@ -146,7 +146,7 @@
          else:
              print (f'Warning: could not find backup file for {filename}')
@@ -28,7 +27,6 @@ patch <<"EOP"
      global args
      for filename in filelist:
          if args.verbose:
-
 @@ -163,7 +163,7 @@
              entire_ast = list([_f for _f in builder.generate() if _f])
              rev_entire_ast = reversed(entire_ast)
@@ -38,7 +36,6 @@ patch <<"EOP"
                      if len(item.body) > 2 :
                          revbody = reversed(item.body)
                          if item.return_type is not None:
-
 @@ -220,6 +221,7 @@
      parser.add_argument('--recursive', action='store_true', default=False, help='Iteratively patch all *.c *.cpp and *.cc files within the current folder')
      parser.add_argument('--verbose', action='store_true', help='print verbose messages')
@@ -47,7 +44,6 @@ patch <<"EOP"
      args = parser.parse_args()
      filelist = []
      if len(args.files ) == 0 :
-
 @@ -243,7 +245,10 @@
          do_unpatch(filelist)
      else:
@@ -60,7 +56,6 @@ patch <<"EOP"
      status = 0
 
  try:
-
 @@ -224,7 +224,7 @@
      filelist = []
      if len(args.files ) == 0 :
