@@ -25,20 +25,18 @@ void ImageViewerDialog::exec() {
 			inputAction = gmenu2x->input.update();
 			if (gmenu2x->inputCommonActions(inputAction)) continue;
 
-			if (gmenu2x->input[CANCEL] || gmenu2x->input[SETTINGS]) return;
-			else if (gmenu2x->input[LEFT] && offsetX < 0) {
+			if (gmenu2x->input[CANCEL] || gmenu2x->input[SETTINGS]) {
+				return;
+			} else if (gmenu2x->input[LEFT] && offsetX < 0) {
 				offsetX += gmenu2x->listRect.w / 3;
 				if (offsetX > 0) offsetX = 0;
-			}
-			else if (gmenu2x->input[RIGHT] && image.raw->w + offsetX > gmenu2x->listRect.w) {
+			} else if (gmenu2x->input[RIGHT] && image.raw->w + offsetX > gmenu2x->listRect.w) {
 				offsetX -=  gmenu2x->listRect.w / 3;
 				if (image.raw->w + offsetX < gmenu2x->listRect.w) offsetX = gmenu2x->listRect.w - image.raw->w;
-			}
-			else if (gmenu2x->input[UP] && offsetY < 0) {
+			} else if (gmenu2x->input[UP] && offsetY < 0) {
 				offsetY +=  gmenu2x->listRect.h / 3;
 				if (offsetY > 0) offsetY = 0;
-			}
-			else if (gmenu2x->input[DOWN] && image.raw->w + offsetY > gmenu2x->listRect.h) {
+			} else if (gmenu2x->input[DOWN] && image.raw->w + offsetY > gmenu2x->listRect.h) {
 				offsetY -=  gmenu2x->listRect.h / 3;
 				if (image.raw->h + offsetY < gmenu2x->listRect.h) offsetY = gmenu2x->listRect.h - image.raw->h;
 			}

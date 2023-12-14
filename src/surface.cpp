@@ -136,10 +136,7 @@ void Surface::free() {
 }
 
 SDL_PixelFormat *Surface::format() {
-	if (raw == NULL)
-		return NULL;
-	else
-		return raw->format;
+	return raw ? raw->format : NULL;
 }
 
 void Surface::load(const string &img, bool alpha, string skin) {

@@ -148,9 +148,11 @@ bool InputDialog::exec() {
 		bool inputAction = gmenu2x->input.update();
 		if (gmenu2x->inputCommonActions(inputAction)) continue;
 
-		if (gmenu2x->input[CANCEL] || gmenu2x->input[MENU]) return false;
-		else if (gmenu2x->input[SETTINGS])		return true;
-		else if (gmenu2x->input[UP])			selRow--;
+		if (gmenu2x->input[CANCEL] || gmenu2x->input[MENU]) {
+			return false;
+		} else if (gmenu2x->input[SETTINGS]) {
+			return true;
+		} else if (gmenu2x->input[UP])			selRow--;
 		else if (gmenu2x->input[DOWN])			selRow++;
 		else if (gmenu2x->input[LEFT])			selCol--;
 		else if (gmenu2x->input[RIGHT])			selCol++;
