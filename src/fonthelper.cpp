@@ -47,7 +47,9 @@ bool FontHelper::utf8Code(uint8_t c) {
 }
 
 FontHelper *FontHelper::setSize(const int size) {
-	if (this->fontSize == size) return this;
+	if (this->fontSize == size) {
+		return this;
+	}
 	TTF_CloseFont(font);
 	TTF_CloseFont(fontOutline);
 	fontSize = size;
@@ -183,8 +185,9 @@ void FontHelper::write(Surface *surface, const string &text, SDL_Rect &wrapRect,
 }
 
 void FontHelper::write(Surface *surface, const string &text, int x, int y, RGBAColor fgColor, RGBAColor bgColor) {
-	if (text.empty()) return;
-
+	if (text.empty()) {
+		return;
+	}
 	if (bgColor.a > 0) {
 		Surface bg;
 		bg.raw = TTF_RenderUTF8_Blended(fontOutline, text.c_str(), rgbatosdl(bgColor));

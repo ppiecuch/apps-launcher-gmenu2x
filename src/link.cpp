@@ -72,8 +72,9 @@ void Link::setBackdrop(const string &backdrop) {
 }
 
 const string Link::searchIcon() {
-	if (!gmenu2x->sc.getSkinFilePath(iconPath).empty())
+	if (!gmenu2x->sc.getSkinFilePath(iconPath).empty()) {
 		return gmenu2x->sc.getSkinFilePath(iconPath);
+	}
 	return gmenu2x->sc.getSkinFilePath("icons/generic.png");
 }
 

@@ -447,7 +447,9 @@ bool Surface::blit(Surface *destination, int x, int y, const uint8_t align, uint
 }
 
 bool Surface::blit(Surface *destination, SDL_Rect destrect, const uint8_t align, uint8_t alpha) {
-	if (destination->raw == NULL || alpha == 0) return false;
+	if (destination->raw == NULL || alpha == 0) {
+		return false;
+	}
 
 	SDL_Rect srcrect = {0, 0, destrect.w, destrect.h};
 

@@ -114,8 +114,12 @@ string FileLister::operator[](uint32_t x) {
 	return getFile(x);
 }
 string FileLister::getFile(uint32_t x) {
-	if (x >= size()) return "";
-	if (x < directories.size()) return directories[x];
+	if (x >= size()) {
+		return "";
+	}
+	if (x < directories.size()) {
+		return directories[x];
+	}
 	return files[x - directories.size()];
 }
 const string FileLister::getFilePath(uint32_t i) {
