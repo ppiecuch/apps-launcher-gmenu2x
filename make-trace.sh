@@ -52,7 +52,7 @@ patch <<"EOP"
      parser.add_argument('--recursive', action='store_true', default=False, help='Iteratively patch all *.c *.cpp and *.cc files within the current folder')
      parser.add_argument('--verbose', action='store_true', help='print verbose messages')
      parser.add_argument('--quiet', '-q', action='store_true', help='ignore parse errors')
-+    parser.add_argument('--exclude', '-x', action='store_true', help='exclude names from patching')
++    parser.add_argument('--exclude', '-x', action='store', type=str, help='exclude names from patching')
      args = parser.parse_args()
      filelist = []
      if len(args.files ) == 0 :
@@ -85,7 +85,7 @@ echo "=== Export repository"
 mkdir gmenu2x
 (cd .. && git ls-files | rsync -a --ignore-missing-args --files-from=- . trace-patch/gmenu2x/)
 echo "=== Run patchCode"
-./penv/bin/python3 patchCode.py --verbose gmenu2x/src/*.cpp
+./penv/bin/python3 patchCode.py --verbose --exclude=mult8x4 gmenu2x/src/*.cpp
 cd gmenu2x
 ./make-linux.sh
 echo "=== Done"
