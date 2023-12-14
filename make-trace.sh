@@ -28,26 +28,17 @@ patch <<"EOP"
      global args
      for filename in filelist:
          if args.verbose:
-@@ -167,12 +167,13 @@
+
+@@ -163,7 +163,7 @@
+             entire_ast = list([_f for _f in builder.generate() if _f])
+             rev_entire_ast = reversed(entire_ast)
+             for item in rev_entire_ast:
+-                if (isinstance( item, ast.Method) or isinstance( item, ast.Function) and (item.body is not None)) :
++                if (isinstance( item, ast.Method) or isinstance( item, ast.Function) and (item.body is not None) and (not item.name in exclude)):
                      if len(item.body) > 2 :
                          revbody = reversed(item.body)
                          if item.return_type is not None:
--                            # Corner case: void functions
--                            if 'void' == item.return_type.name:
--                                if 'return' != item.body[-2].name:
--                                    # Function does not end with return clause
--                                    spaces = calc_insert_point(source, item.body, len(item.body)-1)
--                                    source = insert(source, '\n'+ ' '*spaces + outprint  , item.body[-1].end)
-+                            if not item.name in exclude:
-+                                # Corner case: void functions
-+                                if 'void' == item.return_type.name:
-+                                    if 'return' != item.body[-2].name:
-+                                        # Function does not end with return clause
-+                                        spaces = calc_insert_point(source, item.body, len(item.body)-1)
-+                                        source = insert(source, '\n'+ ' '*spaces + outprint  , item.body[-1].end)
-                         if isinstance( item, ast.Method):
-                             # Only classes can have c/d'tor and the the in_class member
-                             # Corner case: c/d'tor
+
 @@ -220,6 +221,7 @@
      parser.add_argument('--recursive', action='store_true', default=False, help='Iteratively patch all *.c *.cpp and *.cc files within the current folder')
      parser.add_argument('--verbose', action='store_true', help='print verbose messages')
@@ -56,6 +47,7 @@ patch <<"EOP"
      args = parser.parse_args()
      filelist = []
      if len(args.files ) == 0 :
+
 @@ -243,7 +245,10 @@
          do_unpatch(filelist)
      else:
