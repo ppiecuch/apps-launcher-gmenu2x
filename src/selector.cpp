@@ -47,7 +47,9 @@ const std::string Selector::getPreview(uint32_t i) {
 		int d1 = fname.rfind(".");
 		if (d1 != string::npos && d1 > 0) noext = fname.substr(0, d1);
 
-		if (noext.empty() || noext == ".") return previews[fpath];
+		if (noext.empty() || noext == ".") {
+			return previews[fpath];
+		}
 
 		if (screendir.empty()) screendir = "./.images";
 
@@ -132,7 +134,9 @@ const std::string Selector::getFileName(uint32_t i) {
 		noext = lowercase(fname.substr(0, d1));
 
 	unordered_map<string, string>::iterator it = aliases.find(noext);
-	if (it == aliases.end() || it->second.empty()) return fname;
+	if (it == aliases.end() || it->second.empty()) {
+		return fname;
+	}
 	return it->second;
 }
 
@@ -144,7 +148,9 @@ const std::string Selector::getParams(uint32_t i) {
 		noext = lowercase(fname.substr(0, d1));
 
 	unordered_map<string, string>::iterator it = params.find(noext);
-	if (it == params.end()) return "";
+	if (it == params.end()) {
+		return "";
+	}
 	return it->second;
 }
 
