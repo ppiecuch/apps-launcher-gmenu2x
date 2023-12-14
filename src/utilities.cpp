@@ -41,12 +41,14 @@ bool case_less::operator()(const string &left, const string &right) const {
 
 // General tool to strip spaces from both ends:
 string trim(const string &s) {
-	if (s.length() == 0)
+	if (s.length() == 0) {
 		return s;
+	}
 	int b = s.find_first_not_of(" \t\n\r");
 	int e = s.find_last_not_of(" \t\r\n");
-	if (b == -1) // No non-spaces
+	if (b == -1) { // No non-spaces
 		return "";
+	}
 	return string(s, b, e - b + 1);
 }
 
@@ -79,7 +81,9 @@ bool rmtree(string path) {
 
 	DEBUG("RMTREE: '%s'", path.c_str());
 
-	if ((dirp = opendir(path.c_str())) == NULL) return false;
+	if ((dirp = opendir(path.c_str())) == NULL) {
+		return false;
+	}
 	if (path[path.length() - 1] != '/') path += "/";
 
 	while ((dptr = readdir(dirp))) {
@@ -89,9 +93,13 @@ bool rmtree(string path) {
 		int statRet = stat(filepath.c_str(), &st);
 		if (statRet == -1) continue;
 		if (S_ISDIR(st.st_mode)) {
-			if (!rmtree(filepath)) return false;
+			if (!rmtree(filepath)) {
+				return false;
+			}
 		} else {
-			if (unlink(filepath.c_str()) != 0) return false;
+			if (unlink(filepath.c_str()) != 0) {
+				return false;
+			}
 		}
 	}
 

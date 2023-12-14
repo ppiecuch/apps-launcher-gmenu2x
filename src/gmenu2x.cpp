@@ -169,7 +169,7 @@ static void quit_all(int err) {
 	exit(err);
 }
 
-static void restart() {
+void restart() {
 	if (_run_service) {
 		WARNING("Leaving application");
  		if (GMenu2X::instance)

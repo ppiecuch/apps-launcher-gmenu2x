@@ -199,7 +199,9 @@ bool InputManager::update(bool wait) {
 
 	SDL_JoystickUpdate();
 	if (wait) SDL_WaitEvent(&event);
-	else if (!SDL_PollEvent(&event)) return false;
+	else if (!SDL_PollEvent(&event)) {
+		return false;
+	}
 
 	sdl_dump_event(&event);
 
@@ -326,8 +328,9 @@ bool InputManager::isActive(int action) {
 				for (int j = 0; j < joysticks.size(); j++) {
 					// INFO("BUTTON %d/%d (%d): GetButton: %d GetHat: %d", j, map.num, map.value, SDL_JoystickGetButton(joysticks[j], map.num), SDL_JoystickGetHat(joysticks[j], map.num));
 					if (map.value == -1) {
-						if (SDL_JoystickGetButton(joysticks[j], map.num))
+						if (SDL_JoystickGetButton(joysticks[j], map.num)) {
 							return true;
+						}
 					} else if (SDL_JoystickGetHat(joysticks[j], map.num) == map.value) {
 							return true;
 					}
@@ -336,12 +339,18 @@ bool InputManager::isActive(int action) {
 			case MAPPING_TYPE_AXIS:
 				if (map.num < joysticks.size()) {
 					const int axyspos = SDL_JoystickGetAxis(joysticks[map.num], map.value);
-					if (map.treshold < 0 && axyspos < map.treshold) return true;
-					if (map.treshold > 0 && axyspos > map.treshold) return true;
+					if (map.treshold < 0 && axyspos < map.treshold) {
+						return true;
+					}
+					if (map.treshold > 0 && axyspos > map.treshold) {
+						return true;
+					}
 				}
 				break;
 			case MAPPING_TYPE_KEYPRESS:
-				if (keystate[map.value]) return true;
+				if (keystate[map.value]) {
+					return true;
+				}
 				break;
 		}
 	}

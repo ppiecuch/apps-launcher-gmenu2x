@@ -228,4 +228,6 @@ public:
 	virtual void setGamma(int value) { };
 };
 
+void restart(); // re-launching app.
+
 #endif

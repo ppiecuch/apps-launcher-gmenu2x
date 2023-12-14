@@ -102,7 +102,9 @@ Link(gmenu2x, MakeDelegate(this, &LinkApp::run)), file(file) {
 }
 
 const string LinkApp::searchManual() {
-	if (!manualPath.empty()) return manualPath;
+	if (!manualPath.empty()) {
+		return manualPath;
+	}
 	string filename = exec;
 	string::size_type pos = exec.rfind(".");
 	if (pos != string::npos) filename = exec.substr(0, pos);
@@ -114,15 +116,23 @@ const string LinkApp::searchManual() {
 	string linktitle = base_name(file, true);
 	linktitle = dname + linktitle + ".man.txt";
 
-	if (file_exists(linktitle)) return linktitle;
-	if (file_exists(filename)) return filename;
-	if (file_exists(dirtitle)) return dirtitle;
+	if (file_exists(linktitle)) {
+		return linktitle;
+	}
+	if (file_exists(filename)) {
+		return filename;
+	}
+	if (file_exists(dirtitle)) {
+		return dirtitle;
+	}
 
 	return "";
 }
 
 const string LinkApp::searchBackdrop() {
-	if (!backdropPath.empty() || !gmenu2x->confInt["skinBackdrops"]) return backdropPath;
+	if (!backdropPath.empty() || !gmenu2x->confInt["skinBackdrops"]) {
+		return backdropPath;
+	}
 	string execicon = exec;
 	string::size_type pos = exec.rfind(".");
 	if (pos != string::npos) execicon = exec.substr(0, pos);
@@ -138,39 +148,49 @@ const string LinkApp::searchBackdrop() {
 	if (pos != string::npos) linktitle = linktitle.substr(0, pos);
 
 	backdropPath = gmenu2x->sc.getSkinFilePath("backdrops/" + sublinktitle + ".png");
-	if (!backdropPath.empty()) return backdropPath;
-
+	if (!backdropPath.empty()) {
+		return backdropPath;
+	}
 	backdropPath = gmenu2x->sc.getSkinFilePath("backdrops/" + sublinktitle + ".jpg");
-	if (!backdropPath.empty()) return backdropPath;
-
+	if (!backdropPath.empty()) {
+		return backdropPath;
+	}
 	backdropPath = gmenu2x->sc.getSkinFilePath("backdrops/" + linktitle + ".png");
-	if (!backdropPath.empty()) return backdropPath;
-
+	if (!backdropPath.empty()) {
+		return backdropPath;
+	}
 	backdropPath = gmenu2x->sc.getSkinFilePath("backdrops/" + linktitle + ".jpg");
-	if (!backdropPath.empty()) return backdropPath;
-
+	if (!backdropPath.empty()) {
+		return backdropPath;
+	}
 	backdropPath = gmenu2x->sc.getSkinFilePath("backdrops/" + exectitle + ".png");
-	if (!backdropPath.empty()) return backdropPath;
-
+	if (!backdropPath.empty()) {
+		return backdropPath;
+	}
 	backdropPath = gmenu2x->sc.getSkinFilePath("backdrops/" + exectitle + ".jpg");
-	if (!backdropPath.empty()) return backdropPath;
-
+	if (!backdropPath.empty()) {
+		return backdropPath;
+	}
 	backdropPath = gmenu2x->sc.getSkinFilePath("backdrops/" + dirtitle + ".png");
-	if (!backdropPath.empty()) return backdropPath;
-
+	if (!backdropPath.empty()) {
+		return backdropPath;
+	}
 	backdropPath = gmenu2x->sc.getSkinFilePath("backdrops/" + dirtitle + ".jpg");
-	if (!backdropPath.empty()) return backdropPath;
-
+	if (!backdropPath.empty()) {
+		return backdropPath;
+	}
 	backdropPath = dir_name(exec) + "/backdrop.png";
-	if (file_exists(backdropPath)) return backdropPath;
-
+	if (file_exists(backdropPath)) {
+		return backdropPath;
+	}
 	return "";
 }
 
 const string LinkApp::searchIcon() {
 	string iconpath = gmenu2x->sc.getSkinFilePath(icon, false);
-	if (!iconpath.empty()) return iconpath;
-
+	if (!iconpath.empty()) {
+		return iconpath;
+	}
 	string execicon = exec;
 	string::size_type pos = exec.rfind(".");
 	if (pos != string::npos) execicon = exec.substr(0, pos);
@@ -183,35 +203,46 @@ const string LinkApp::searchIcon() {
 
 	if (linkparts.size() > 2) {
 		iconpath = gmenu2x->sc.getSkinFilePath("icons/" + linkparts[0] + "." + linkparts[1] + ".png", false);
-		if (!iconpath.empty()) return iconpath;
-
+		if (!iconpath.empty()) {
+			return iconpath;
+		}
 		iconpath = gmenu2x->sc.getSkinFilePath("icons/" + linkparts[1] + "." + linkparts[0] + ".png", false);
-		if (!iconpath.empty()) return iconpath;
+		if (!iconpath.empty()) {
+			return iconpath;
+		}
 	}
 
 	if (linkparts.size() > 1) {
 		iconpath = gmenu2x->sc.getSkinFilePath("icons/" + linkparts[1] + ".png", false);
-		if (!iconpath.empty()) return iconpath;
-
+		if (!iconpath.empty()) {
+			return iconpath;
+		}
 		iconpath = gmenu2x->sc.getSkinFilePath("icons/" + linkparts[0] + ".png", false);
-		if (!iconpath.empty()) return iconpath;
+		if (!iconpath.empty()) {
+			return iconpath;
+		}
 	}
 
 	iconpath = gmenu2x->sc.getSkinFilePath("icons/" + linktitle + ".png", false);
-	if (!iconpath.empty()) return iconpath;
-
+	if (!iconpath.empty()) {
+		return iconpath;
+	}
 	iconpath = gmenu2x->sc.getSkinFilePath("icons/" + exectitle + ".png", false);
-	if (!iconpath.empty()) return iconpath;
-
+	if (!iconpath.empty()) {
+		return iconpath;
+	}
 	iconpath = gmenu2x->sc.getSkinFilePath("icons/" + dirtitle + ".png", false);
-	if (!iconpath.empty()) return iconpath;
-
+	if (!iconpath.empty()) {
+		return iconpath;
+	}
 	iconpath = dir_name(exec) + "/" + exectitle + ".png";
-	if (file_exists(iconpath)) return iconpath;
-
+	if (file_exists(iconpath)) {
+		return iconpath;
+	}
 	iconpath = execicon + ".png";
-	if (file_exists(iconpath)) return iconpath;
-
+	if (file_exists(iconpath)) {
+		return iconpath;
+	}
 #if defined(OPK_SUPPORT)
 	if (isOPK()) {
 		return exec + "#" + icon_opk;
@@ -258,7 +289,9 @@ bool LinkApp::targetExists() {
 }
 
 bool LinkApp::save() {
-	if (!edited) return false;
+	if (!edited) {
+		return false;
+	}
 	int pos = icon.find('#'); // search for "opkfile.opk#icon.png"
 	if (pos != string::npos) {
 		icon_opk = icon.substr(pos + 1);
@@ -310,15 +343,16 @@ void LinkApp::run() {
 		gmenu2x->input.update();
 		if (SDL_GetTicks() - start > 1400) {
 			// hold press -> inverted
-			if (selectordir != "")
+			if (selectordir != "") {
 				return launch();
+			}
 			return selector();
 		}
 	}
-
 	// quick press -> normal
-	if (selectordir != "")
+	if (selectordir != "") {
 		return selector();
+	}
 	return launch();
 }
 
@@ -475,8 +509,7 @@ void LinkApp::launch(const string &selectedFile, string dir) {
 	}
 	//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
 	//try relaunching gmenu2x
-	chdir(exe_path().c_str());
-	execlp("./gmenu2x", "./gmenu2x", NULL);
+	restart();
 }
 
 void LinkApp::setExec(const string &exec) {
