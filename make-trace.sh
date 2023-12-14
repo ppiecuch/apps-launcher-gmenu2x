@@ -18,6 +18,7 @@ patch <<"EOP"
 +#define TRACE_ME_OUT { struct timeval tp; gettimeofday(&tp , NULL); printf("[%4ld.%4ld] Out: %s\\n",tp.tv_sec , tp.tv_usec,__PRETTY_FUNCTION__); }
 
  """
+
 @@ -146,7 +146,7 @@
          else:
              print (f'Warning: could not find backup file for {filename}')
@@ -56,6 +57,7 @@ patch <<"EOP"
      status = 0
 
  try:
+
 @@ -224,7 +224,7 @@
      filelist = []
      if len(args.files ) == 0 :
@@ -65,6 +67,7 @@ patch <<"EOP"
      else:
          # For Python 2 where argparse does not return Unicode.
          args.files = [filename.decode(sys.getfilesystemencoding())
+
 EOP
 python3 -m venv penv
 ./penv/bin/pip install cppclean
