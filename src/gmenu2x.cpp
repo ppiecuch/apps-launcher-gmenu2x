@@ -161,6 +161,7 @@ static bool _sig_handler = false;
 static bool _run_service = false;
 
 static void quit_all(int err) {
+	WARNING("Processing signal handler %d", err);
 	if (!_sig_handler) {
 		_sig_handler = true;
 		if (GMenu2X::instance)
@@ -246,6 +247,10 @@ GMenu2X::~GMenu2X() {
 	if (s) delete s;
 	if (font) delete font;
 	if (titlefont) delete titlefont;
+
+	menu = NULL;
+	s = NULL;
+	font = titlefont = NULL;
 }
 
 void GMenu2X::quit() {
@@ -268,8 +273,7 @@ void GMenu2X::quit() {
 	if (titlefont) titlefont->free();
 
 	fflush(NULL);
-	if (!_sig_handler) // segfault on quit
-		SDL_Quit();
+	// SDL_Quit(); // segfault on quit
 	hwDeinit();
 }
 
@@ -285,8 +289,7 @@ void GMenu2X::quit_nosave() {
 	if (titlefont) titlefont->free();
 
 	fflush(NULL);
-	if (!_sig_handler)
-		SDL_Quit();
+	// SDL_Quit(); // segfault on quit
 	hwDeinit();
 }
 

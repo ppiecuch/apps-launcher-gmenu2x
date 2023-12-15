@@ -129,8 +129,8 @@ void Surface::enableAlpha() {
 }
 
 void Surface::free() {
-	SDL_FreeSurface(raw);
-	SDL_FreeSurface(dblbuffer);
+	if (raw) SDL_FreeSurface(raw);
+	if (dblbuffer) SDL_FreeSurface(dblbuffer);
 	raw = NULL;
 	dblbuffer = NULL;
 }
