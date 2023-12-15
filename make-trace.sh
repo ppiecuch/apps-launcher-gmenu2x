@@ -14,8 +14,8 @@ patch <<"EOP"
  #include <sys/time.h>
 -#define TRACE_ME_IN struct timeval tp ; gettimeofday ( &tp , nullptr ); printf("[%4ld.%4ld] In: %s\\n",tp.tv_sec , tp.tv_usec,__PRETTY_FUNCTION__);
 -#define TRACE_ME_OUT gettimeofday ( &tp , nullptr ); printf("[%4ld.%4ld] Out: %s\\n",tp.tv_sec , tp.tv_usec,__PRETTY_FUNCTION__);
-+#define TRACE_ME_IN { struct timeval tp; gettimeofday(&tp, NULL); printf("[%4ld.%4ld] In: %s\\n",tp.tv_sec , tp.tv_usec,__PRETTY_FUNCTION__); }
-+#define TRACE_ME_OUT { struct timeval tp; gettimeofday(&tp , NULL); printf("[%4ld.%4ld] Out: %s\\n",tp.tv_sec , tp.tv_usec,__PRETTY_FUNCTION__); }
++#define TRACE_ME_IN { struct timeval tp; gettimeofday(&tp, NULL); printf("[%4ld.%4ld] In: %s\\n",tp.tv_sec , tp.tv_usec,__PRETTY_FUNCTION__); fflush(stdout); }
++#define TRACE_ME_OUT { struct timeval tp; gettimeofday(&tp , NULL); printf("[%4ld.%4ld] Out: %s\\n",tp.tv_sec , tp.tv_usec,__PRETTY_FUNCTION__); fflush(stdout); }
 
  """
 
@@ -75,7 +75,7 @@ echo "=== Export repository"
 mkdir gmenu2x
 (cd .. && git ls-files | rsync -a --ignore-missing-args --files-from=- . trace-patch/gmenu2x/)
 echo "=== Run patchCode"
-./penv/bin/python3 patchCode.py --verbose --exclude=mult8x4 gmenu2x/src/*.cpp
+./penv/bin/python3 patchCode.py --verbose --exclude=mult8x4,min,max gmenu2x/src/*.cpp
 cd gmenu2x
 ./make-linux.sh
 echo "=== Done"
