@@ -273,7 +273,9 @@ void GMenu2X::quit() {
 	if (titlefont) titlefont->free();
 
 	fflush(NULL);
-	// SDL_Quit(); // segfault on quit
+#if !defined(TARGET_LINUX)
+	SDL_Quit(); // segfault on quit
+#endif
 	hwDeinit();
 }
 
@@ -289,7 +291,9 @@ void GMenu2X::quit_nosave() {
 	if (titlefont) titlefont->free();
 
 	fflush(NULL);
-	// SDL_Quit(); // segfault on quit
+#if !defined(TARGET_LINUX)
+	SDL_Quit(); // segfault on quit
+#endif
 	hwDeinit();
 }
 
