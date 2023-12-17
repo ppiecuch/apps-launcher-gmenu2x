@@ -64,11 +64,14 @@ SDL_Color rgbatosdl(RGBAColor color);
 class Surface {
 private:
 	bool locked;
-	int halfW, halfH;
+	int halfW, halfH, upscaleSurf;
 	SDL_Surface *dblbuffer;
 
+	SDL_Surface *_createDefaultSurf(int w, int h, uint32_t flags);
+	SDL_Surface *_duplicateSurf(SDL_Surface *source, int w, int h);
+
 public:
-	Surface();
+	Surface(int zoom = 0);
 	Surface(const string &img, const string &skin = "", bool alpha = true);
 	Surface(const string &img, bool alpha, const string &skin = "");
 	Surface(SDL_Surface *s, SDL_PixelFormat *fmt = NULL, uint32_t flags = 0);
@@ -77,10 +80,10 @@ public:
 	Surface(void *s, size_t &size);
 	~Surface();
 
-	void enableVirtualDoubleBuffer(SDL_Surface *surface);
+	void enableVirtualDoubleBuffer(SDL_Surface *surface, int drawW = 0, int drawH = 0);
 	void enableAlpha();
 
-	SDL_Surface *raw, *screen;
+	SDL_Surface *raw;
 
 	void free();
 	void load(const string &img, bool alpha = true, string skin = "");
@@ -113,14 +116,12 @@ public:
 	void box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
 		box((SDL_Rect){ x, y, w, h }, RGBAColor(r, g, b, a));
 	}
-	/** Draws the given rectangle on this surface in the given color, blended
-	  * according to the alpha value of the color argument.
-	  */
+	// Draws the given rectangle on this surface in the given color, blended
+	// according to the alpha value of the color argument.
 	void fillRectAlpha(SDL_Rect rect, RGBAColor c);
 
-	/** Clips the given rectangle against this surface's active clipping
-	  * rectangle.
-	  */
+	// Clips the given rectangle against this surface's active clipping
+	// rectangle.
 	void applyClipRect(SDL_Rect& rect);
 
 	void rectangle(SDL_Rect re, RGBAColor c);
@@ -134,6 +135,7 @@ public:
 	void operator = (SDL_Surface*);
 	void operator = (Surface*);
 
+	int softZoom(SDL_Surface *source, SDL_Surface *dest, unsigned zoom, SDL_Rect *destRect = NULL);
 	void softStretch(uint16_t w, uint16_t h, uint8_t scale_mode = SScaleStretch);
 	void setAlpha(uint8_t alpha);
 

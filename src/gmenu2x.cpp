@@ -157,11 +157,11 @@ static const char *colorToString(enum color c) {
 
 GMenu2X *GMenu2X::instance = NULL;
 
-static bool _sig_handler = false;
 static bool _run_service = false;
 
 static void quit_all(int err) {
-	WARNING("Processing signal handler %d", err);
+	static bool _sig_handler = false;
+	WARNING("Processing signal handler %d/%s", err, strsignal(err));
 	if (!_sig_handler) {
 		_sig_handler = true;
 		if (GMenu2X::instance)
@@ -337,6 +337,18 @@ void GMenu2X::main(bool autoStart) {
 		set_date_time(prevDateTime.c_str());
 	}
 
+	// Check SDL versions
+	const SDL_version *linked = SDL_Linked_Version();
+	SDL_version compiled;
+
+	SDL_VERSION(&compiled);
+
+	if (!linked) {
+		INFO("Initializing SDL %d.%d.%d", compiled.major, compiled.minor, compiled.patch);
+	} else {
+		INFO("Initializing SDL %d.%d.%d (built against version %d.%d.%d)", linked->major, linked->minor, linked->patch, compiled.major, compiled.minor, compiled.patch);
+	}
+
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) < 0) {
 		ERROR("Could not initialize SDL: %s", SDL_GetError());
 		quit();
@@ -349,12 +361,18 @@ void GMenu2X::main(bool autoStart) {
 
 	setInputSpeed();
 
+#ifdef __APPLE__
+	const int _upscale = 2;
+#else
+	const int _upscale = 1;
+#endif
+
 #ifdef RASPBERRY_PI
 	const SDL_VideoInfo* vInfo = SDL_GetVideoInfo();
 	INFO("Setting videomode %dx%dx%d",vInfo->current_w, vInfo->current_h, vInfo->vfmt->BitsPerPixel);
 	SDL_Surface *screen =  SDL_SetVideoMode(vInfo->current_w, vInfo->current_h, vInfo->vfmt->BitsPerPixel, SDL_SWSURFACE);
 #else
-	SDL_Surface *screen = SDL_SetVideoMode(this->w, this->h, this->bpp, SDL_HWSURFACE |
+	SDL_Surface *screen = SDL_SetVideoMode(this->w * _upscale, this->h * _upscale, this->bpp, SDL_HWSURFACE |
 		#ifdef SDL_TRIPLEBUF
 			SDL_TRIPLEBUF
 		#else
@@ -362,9 +380,9 @@ void GMenu2X::main(bool autoStart) {
 		#endif
 	);
 #endif
-	s = new Surface();
 
-	s->enableVirtualDoubleBuffer(screen);
+	s = new Surface(upscale);
+	s->enableVirtualDoubleBuffer(screen, this->w, this->h);
 
 	setSkin(confStr["skin"], true);
 
@@ -374,7 +392,7 @@ void GMenu2X::main(bool autoStart) {
 	setCPU(confInt["cpuMenu"]);
 
 	srand(time(0));  // Seed the rand with current time to get different number sequences
-	int randomInt = rand() % 10; // Generate a random val={0..x} to print "Hint" msg occasionally
+	const int randomInt = rand() % 10; // Generate a random val={0..x} to print "Hint" msg occasionally
 	// Hint messages
 	if (confInt["showHints"] == 1) {
 		if (confStr["lastCommand"] == "" || confStr["lastDirectory"] == "") {
@@ -460,7 +478,7 @@ void GMenu2X::main(bool autoStart) {
 	}
 
 	input.update(false);
-	if (input[MANUAL]){ // Reset GMenu2X settings
+	if (input[MANUAL]) { // Reset GMenu2X settings
 		string tmppath = exe_path() + "/gmenu2x.conf";
 		unlink(tmppath.c_str());
 		reinit();
@@ -479,7 +497,7 @@ void GMenu2X::main(bool autoStart) {
 		viewAutoStart();
 	}
 
-	if(confStr["lastCommand"] != "" && confStr["lastDirectory"] != "")  {
+	if(confStr["lastCommand"] != "" && confStr["lastDirectory"] != "") {
 		INFO("Starting autostart()");
 		INFO("conf %s %s",confStr["lastDirectory"].c_str(),confStr["lastCommand"].c_str());
 		INFO("autostart %s %s",confStr["lastDirectory"].c_str(),confStr["lastCommand"].c_str());
@@ -686,27 +704,27 @@ string GMenu2X::setBackground(Surface *bg, string wallpaper) {
 		if (sc[wallpaper] == NULL) {
 			return "";
 		}
-		if (confStr["bgscale"] == "Stretch") sc[wallpaper]->softStretch(this->w, this->h, SScaleStretch);
-		else if (confStr["bgscale"] == "Crop") sc[wallpaper]->softStretch(this->w, this->h, SScaleMax);
-		else if (confStr["bgscale"] == "Aspect") sc[wallpaper]->softStretch(this->w, this->h, SScaleFit);
+		if (confStr["bgscale"] == "Stretch") sc[wallpaper]->softStretch(w, h, SScaleStretch);
+		else if (confStr["bgscale"] == "Crop") sc[wallpaper]->softStretch(w, h, SScaleMax);
+		else if (confStr["bgscale"] == "Aspect") sc[wallpaper]->softStretch(w, h, SScaleFit);
 	}
 
 	cls(bg, false);
-	sc[wallpaper]->blit(bg, (this->w - sc[wallpaper]->width()) / 2, (this->h - sc[wallpaper]->height()) / 2);
+	sc[wallpaper]->blit(bg, (w - sc[wallpaper]->width()) / 2, (h - sc[wallpaper]->height()) / 2);
 	return wallpaper;
 }
 
 void GMenu2X::initFont() {
 	string skinFont = confStr["skinFont"] == "Default" ? "skins/Default/font.ttf" : sc.getSkinFilePath("font.ttf");
 
-	delete font;
+	if (font) delete font;
 	font = new FontHelper(skinFont, skinConfInt["fontSize"], skinConfColors[COLOR_FONT], skinConfColors[COLOR_FONT_OUTLINE]);
 	if (!font->font) {
 		delete font;
 		font = new FontHelper("skins/Default/font.ttf", skinConfInt["fontSize"], skinConfColors[COLOR_FONT], skinConfColors[COLOR_FONT_OUTLINE]);
 	}
 
-	delete titlefont;
+	if (titlefont) delete titlefont;
 	titlefont = new FontHelper(skinFont, skinConfInt["fontSizeTitle"], skinConfColors[COLOR_FONT], skinConfColors[COLOR_FONT_OUTLINE]);
 	if (!titlefont->font) {
 		delete titlefont;
@@ -770,15 +788,14 @@ void GMenu2X::settings_date() {
 	string prevDateTime = confStr["datetime"] = get_date_time();
 	sd.addSetting(new MenuSettingDateTime(this, tr["Date & Time"], tr["Set system's software clock"], &confStr["datetime"]));
 
-	if (sd.exec() && sd.edited() && sd.save) {
-
+	if (sd.exec() && sd.edited() && sd.save)
 		writeConfig();
+
+	string freshDateTime = confStr["datetime"];
+	if (prevDateTime != confStr["datetime"]) {
+		set_date_time(freshDateTime.c_str());
+		powerManager->doSuspend(0);
 	}
-		string freshDateTime = confStr["datetime"];
-		if (prevDateTime != confStr["datetime"]) {
-			set_date_time(freshDateTime.c_str());
-			powerManager->doSuspend(0);
-			}
 }
 
 void GMenu2X::settings() {
@@ -897,7 +914,7 @@ void GMenu2X::resetSettings() {
 	
 	if (CPU_MAX != CPU_MIN) {
 		sd.addSetting(new MenuSettingBool(this, tr["CPU speed"], tr["Reset link's custom CPU speed back to default"], &reset_cpu));
-	  }
+	}
 
 	if (sd.exec() && sd.edited() && sd.save) {
 		MessageBox mb(this, tr["Changes will be applied to ALL"]+"\n"+tr["apps and GMenuNX. Are you sure?"], "skin:icons/exit.png");
@@ -1007,6 +1024,7 @@ void GMenu2X::writeTmp(int selelem, const string &selectordir) {
 
 void GMenu2X::readConfig() {
 	string conf = exe_path() + "/gmenu2x.conf";
+	INFO("Read configuration from %s", conf.c_str());
 	// Defaults *** Sync with default values in writeConfig
 	confInt["saveSelection"] = 1;
 	confInt["dialogAutoStart"] = 1;

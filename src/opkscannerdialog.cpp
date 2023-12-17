@@ -101,7 +101,7 @@ void OPKScannerDialog::opkInstall(const string &path) {
 			section = "applications";
 		bool terminal = false;
 
-		while (ret = opk_read_pair(opk, &key, &lkey, &val, &lval)) {
+		while ((ret = opk_read_pair(opk, &key, &lkey, &val, &lval))) {
 			if (ret < 0) {
 				text.push_back(path + ": " + gmenu2x->tr["Error loading meta-data"]);
 				lineWidth = drawText(&text, firstCol, -1, rowsPerPage);

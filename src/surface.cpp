@@ -44,9 +44,9 @@ SDL_Color rgbatosdl(RGBAColor color) {
 	return (SDL_Color){color.r, color.g, color.b, color.a};
 }
 
-Surface::Surface() {
-	raw = NULL;
-	dblbuffer = NULL;
+Surface::Surface(int zoom) {
+	raw = dblbuffer = NULL;
+	upscaleSurf = zoom;
 }
 
 Surface::Surface(void *s, size_t &size) {
@@ -54,26 +54,29 @@ Surface::Surface(void *s, size_t &size) {
 	SDL_Surface *_raw = IMG_Load_RW(rw, 1);
 	raw = SDL_DisplayFormatAlpha(_raw);
 	SDL_FreeSurface(_raw);
+	dblbuffer = NULL;
+	upscaleSurf = 0;
 }
 
 Surface::Surface(const string &img, bool alpha, const string &skin) {
-	raw = NULL;
-	dblbuffer = NULL;
+	raw = dblbuffer = NULL;
 	load(img, alpha, skin);
 	halfW = raw->w/2;
 	halfH = raw->h/2;
+	upscaleSurf = 0;
 }
 
 Surface::Surface(const string &img, const string &skin, bool alpha) {
-	raw = NULL;
-	dblbuffer = NULL;
+	raw = dblbuffer = NULL;
+	upscaleSurf = 0;
 	load(img, alpha, skin);
 	halfW = raw->w/2;
 	halfH = raw->h/2;
 }
 
 Surface::Surface(SDL_Surface *s, SDL_PixelFormat *fmt, uint32_t flags) {
-	dblbuffer = NULL;
+	raw = dblbuffer = NULL;
+	upscaleSurf = 0;
 	this->operator =(s);
 	// if (fmt != NULL || flags != 0) {
 	if (fmt == NULL) fmt = s->format;
@@ -83,12 +86,24 @@ Surface::Surface(SDL_Surface *s, SDL_PixelFormat *fmt, uint32_t flags) {
 }
 
 Surface::Surface(Surface *s) {
-	dblbuffer = NULL;
+	raw = dblbuffer = NULL;
+	upscaleSurf = 0;
 	this->operator =(s->raw);
 }
 
 Surface::Surface(int w, int h, uint32_t flags) {
 	dblbuffer = NULL;
+	upscaleSurf = 0;
+	raw = _createDefaultSurf(w, h, flags);
+	halfW = w/2;
+	halfH = h/2;
+}
+
+Surface::~Surface() {
+	free();
+}
+
+SDL_Surface *Surface::_createDefaultSurf(int w, int h, uint32_t flags) {
 	uint32_t rmask, gmask, bmask, amask;
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 	rmask = 0xff000000;
@@ -102,22 +117,25 @@ Surface::Surface(int w, int h, uint32_t flags) {
 	amask = 0xff000000;
 #endif
 
-	SDL_Surface* _raw = SDL_CreateRGBSurface(flags, w, h, 16, rmask, gmask, bmask, amask);
-	raw = SDL_DisplayFormat(_raw);
-	SDL_FreeSurface(_raw);
+	SDL_Surface *_surf = SDL_CreateRGBSurface(flags, w, h, 16, rmask, gmask, bmask, amask);
+	SDL_Surface *surf = SDL_DisplayFormat(_surf);
+	SDL_FreeSurface(_surf);
 	//SDL_SetAlpha(raw, SDL_SRCALPHA|SDL_RLEACCEL, SDL_ALPHA_OPAQUE);
-	halfW = w/2;
-	halfH = h/2;
+	return surf;
 }
 
-Surface::~Surface() {
-	free();
+SDL_Surface *Surface::_duplicateSurf(SDL_Surface *source, int w, int h) {
+	SDL_PixelFormat *fmt = source->format;
+	SDL_Surface *dest = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, fmt->BitsPerPixel, fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
+	return dest;
 }
 
-void Surface::enableVirtualDoubleBuffer(SDL_Surface *surface) {
+void Surface::enableVirtualDoubleBuffer(SDL_Surface *surface, int drawW, int drawH) {
 	dblbuffer = surface;
+	if (!drawW) drawW = dblbuffer->w;
+	if (!drawH) drawH = dblbuffer->h;
 
-	SDL_Surface* _raw = SDL_CreateRGBSurface(SDL_SWSURFACE, dblbuffer->w, dblbuffer->h, 16, 0, 0, 0, 0);
+	SDL_Surface *_raw = SDL_CreateRGBSurface(SDL_SWSURFACE, drawW, drawH, 16, 0, 0, 0, 0);
 	raw = SDL_DisplayFormat(_raw);
 	SDL_FreeSurface(_raw);
 }
@@ -131,8 +149,7 @@ void Surface::enableAlpha() {
 void Surface::free() {
 	if (raw) SDL_FreeSurface(raw);
 	if (dblbuffer) SDL_FreeSurface(dblbuffer);
-	raw = NULL;
-	dblbuffer = NULL;
+	raw = dblbuffer = NULL;
 }
 
 SDL_PixelFormat *Surface::format() {
@@ -194,12 +211,16 @@ void Surface::unlock() {
 }
 
 void Surface::flip() {
+	SDL_Surface *flip = raw;
 	if (dblbuffer != NULL) {
-		SDL_BlitSurface(raw, NULL, dblbuffer, NULL);
-		SDL_Flip(dblbuffer);
-	} else {
-		SDL_Flip(raw);
+		SDL_Rect rc = {0 , 0 , 100 , 100};
+		if (upscaleSurf > 1)
+			softZoom(raw, dblbuffer, upscaleSurf, &rc);
+		else
+			SDL_BlitSurface(raw, NULL, dblbuffer, NULL);
+		flip = dblbuffer;
 	}
+	SDL_Flip(flip);
 }
 
 void Surface::putPixel(int x, int y, RGBAColor color) {
@@ -207,14 +228,10 @@ void Surface::putPixel(int x, int y, RGBAColor color) {
 }
 
 void Surface::putPixel(int x, int y, uint32_t color) {
-	//determine position
-	char* pPosition = (char*) raw->pixels;
-	//offset by y
-	pPosition += (raw->pitch * y);
-	//offset by x
-	pPosition += (raw->format->BytesPerPixel * x);
-	//copy pixel data
-	memcpy(pPosition, &color, raw->format->BytesPerPixel);
+	char* pPosition = (char*) raw->pixels; // determine position
+	pPosition += (raw->pitch * y); // offset by y
+	pPosition += (raw->format->BytesPerPixel * x); // offset by x
+	memcpy(pPosition, &color, raw->format->BytesPerPixel); // copy pixel data
 }
 
 RGBAColor Surface::pixelColor(int x, int y) {
@@ -346,9 +363,7 @@ void Surface::fillRectAlpha(SDL_Rect rect, RGBAColor c) {
 	uint32_t color = c.pixelValue(format);
 	uint8_t alpha = c.a;
 
-	uint8_t* edge = static_cast<uint8_t*>(raw->pixels)
-				   + rect.y * raw->pitch
-				   + rect.x * format->BytesPerPixel;
+	uint8_t* edge = static_cast<uint8_t*>(raw->pixels) + rect.y * raw->pitch + rect.x * format->BytesPerPixel;
 
 	// Blending: surf' = surf * (1 - alpha) + fill * alpha
 
@@ -471,6 +486,45 @@ bool Surface::blit(Surface *destination, SDL_Rect destrect, const uint8_t align,
 	return SDL_BlitSurface(raw, &srcrect, destination->raw, &destrect);
 }
 
+int Surface::softZoom(SDL_Surface *source, SDL_Surface *dest, unsigned zoom, SDL_Rect *destRect) {
+	if (source == NULL || dest == NULL) {
+		return -1;
+	}
+	if (dest->format->BytesPerPixel != 2) {
+		return -1;
+	}
+	if (source->w * zoom > dest->w || source->h * zoom > dest->h) {
+		return -1;
+	}
+	SDL_Rect defaultRect = {0 , 0 , 0 , 0};
+	if( NULL == destRect) {
+		destRect = &defaultRect;
+	}
+	SDL_LockSurface(dest);
+	SDL_LockSurface(source);
+
+	Uint32 *srcPixelRow = (Uint32 *)source->pixels;
+	Uint32 *destPixelRow = (Uint32 *)dest->pixels + destRect->x + dest->w * destRect->y;
+	Uint32 *destPixel = NULL;
+	Uint32 *destPixelp = NULL; // destination pixel pointer
+	Uint32 x, y, a;
+	for(y = 0; y < source->h; y++, destPixelRow += zoom * dest->w, srcPixelRow += source->w) {
+		for(x = 0, destPixel = destPixelRow; x < source->w; x++, destPixel += zoom) {
+			for(a = 0, destPixelp = destPixel; a < zoom; a++) {
+				*(destPixelp + a) = *(srcPixelRow + x);
+			}
+		}
+		// duplicate lines
+		for(Uint32 a = 1; a < zoom; a++) { // duplicate lines
+			memcpy(destPixelRow + a*dest->w, destPixelRow, sizeof(Uint32)* (dest->w-destRect->x));
+        }
+	}
+	SDL_UnlockSurface(dest);
+	SDL_UnlockSurface(source);
+
+	return 0;
+}
+
 void Surface::softStretch(uint16_t w, uint16_t h, uint8_t scale_mode) {
 	float src_r = (float)raw->w / raw->h;
 	float dst_r = (float)w / h;
@@ -513,12 +567,7 @@ void Surface::setAlpha(uint8_t alpha) {
 		for (int y = 0; y < raw->h; ++y) {
 			for (int x = 0; x < raw->w; ++x) {
 				// Get a pointer to the current pixel.
-				Uint32* pixel_ptr = (Uint32 *)(
-						(Uint8 *)raw->pixels
-						+ y * raw->pitch
-						+ x * bpp
-						);
-
+				Uint32* pixel_ptr = (Uint32 *)((Uint8 *)raw->pixels + y * raw->pitch + x * bpp);
 				Uint8 r, g, b, a;
 				SDL_GetRGBA(*pixel_ptr, fmt, &r, &g, &b, &a); // Get the old pixel components.
 				*pixel_ptr = SDL_MapRGBA(fmt, r, g, b, scale * a); // Set the pixel with the new alpha.

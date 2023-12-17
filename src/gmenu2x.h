@@ -132,9 +132,7 @@ private:
 public:
 	static GMenu2X *instance;
 
-	/*
-	 * Variables needed for elements disposition
-	 */
+	// Variables needed for elements disposition
 	uint32_t w = 320, h = 240, bpp = 16;
 	SDL_Rect listRect, linksRect, sectionBarRect, bottomBarRect;
 
