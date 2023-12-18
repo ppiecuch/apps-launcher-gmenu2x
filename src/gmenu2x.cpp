@@ -2239,6 +2239,7 @@ int GMenu2X::setBacklight(int val, bool popup) {
 
 		Surface bg(s);
 
+		// Current FB Power mode (0: full on, 1..3: power saving modes; 4: full off), see kernel FB_BLANK_XXX
 		Surface *iconBrightness[6] = {
 			sc["skin:imgs/brightness/0.png"],
 			sc["skin:imgs/brightness/1.png"],
@@ -2287,8 +2288,7 @@ int GMenu2X::setBacklight(int val, bool popup) {
 int GMenu2X::drawButton(Button *btn, int x, int y) {
 	if (y < 0) y = this->h + y;
 	btn->setPosition(x, y);
-	btn->paint();
-	return x;
+	return btn->paint();
 }
 
 int GMenu2X::drawButton(Surface *s, const string &btn, const string &text, int x, int y) {
