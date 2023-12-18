@@ -381,7 +381,7 @@ void GMenu2X::main(bool autoStart) {
 	);
 #endif
 
-	s = new Surface(upscale);
+	s = new Surface(_upscale);
 	s->enableVirtualDoubleBuffer(screen, this->w, this->h);
 
 	setSkin(confStr["skin"], true);
